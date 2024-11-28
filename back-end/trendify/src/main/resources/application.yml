@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: trendify
+  datasource:
+    url: jdbc:mysql://localhost:3306/trendify
+    username: root
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+# swagger
+open:
+  api:
+    title: API Service
+    version: v1.0.0
+    description: API Doc for trendify application
