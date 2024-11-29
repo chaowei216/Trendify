@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
-@Table(name = "product_variant")
+@Table(name = "product_variants")
 @Getter
 @Setter
 @Builder
@@ -44,4 +46,9 @@ public class ProductVariant extends BaseEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @OneToMany(mappedBy = "productVariant",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    List<OrderDetail> orderDetails;
 }

@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+import java.util.List;
+
 @Entity
 @Table(
-        name = "account",
+        name = "accounts",
         indexes = {
                 @Index(
                         columnList = "username",
@@ -31,7 +34,11 @@ public class Account extends BaseEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "full_name")
+    @Column(
+            name = "full_name",
+            nullable = false,
+            length = 50
+    )
     String fullName;
 
     @Column(
@@ -48,6 +55,12 @@ public class Account extends BaseEntity<Long> {
             length = 30
     )
     String password;
+
+    @Column(
+            name = "date_of_birth",
+            nullable = false
+    )
+    Date dateOfBirth;
 
     @Column(
             name = "email",
@@ -75,6 +88,24 @@ public class Account extends BaseEntity<Long> {
             nullable = false
     )
     UserStatus status;
+
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL
+    )
+    List<Token> tokens;
+
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL
+    )
+    List<SocialAccount> socialAccounts;
+
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL
+    )
+    List<Order> orders;
 
     @ManyToOne(
             fetch = FetchType.EAGER,

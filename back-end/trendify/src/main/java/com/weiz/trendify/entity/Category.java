@@ -7,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 @Getter
 @Setter
 @Builder
@@ -23,7 +23,7 @@ public class Category extends BaseEntity<Integer> {
     @Column(
             name = "category_name",
             nullable = false,
-            length = 20
+            length = 100
     )
     String name;
 

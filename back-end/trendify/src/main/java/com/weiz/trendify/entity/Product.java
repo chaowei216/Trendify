@@ -1,6 +1,5 @@
 package com.weiz.trendify.entity;
 
-import com.weiz.trendify.entity.enums.ESize;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +7,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.List;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @Getter
 @Setter
 @Builder
