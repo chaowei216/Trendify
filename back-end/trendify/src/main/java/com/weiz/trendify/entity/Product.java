@@ -22,7 +22,8 @@ public class Product extends BaseEntity<Long> {
 
     @Column(
             name = "product_name",
-            nullable = false
+            nullable = false,
+            length = 80
     )
     String name;
 
@@ -31,6 +32,13 @@ public class Product extends BaseEntity<Long> {
             nullable = false
     )
     Double price;
+
+    @Column(
+            name = "default_image",
+            nullable = false,
+            length = 50
+    )
+    String defaultImage;
 
     @Column(
             name = "description",
