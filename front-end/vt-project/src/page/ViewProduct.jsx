@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import product1 from '../assets/2.png';
 import product2 from '../assets/4.png';
 import product3 from '../assets/4.png';
 import Footer from "../components/Footer";
 const ViewProduct = () => {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [priceRange, setPriceRange] = useState('all');
     const [category, setCategory] = useState('all');
