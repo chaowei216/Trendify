@@ -9,7 +9,7 @@ const Navbar = () => {
                               hover:scale-105" />
 
                 <div className="flex gap-12 text-white text-sm">
-                    {['TRANG CHỦ', 'VỀ CHÚNG TÔI', 'LIÊN HỆ'].map((item) => (
+                    {['TRANG CHỦ', 'BỘ SƯU TẬP', 'LIÊN HỆ'].map((item) => (
                         <a key={item} href="#"
                             className="relative px-2 py-1 group">
                             <span className="relative z-10 transition-colors duration-300
