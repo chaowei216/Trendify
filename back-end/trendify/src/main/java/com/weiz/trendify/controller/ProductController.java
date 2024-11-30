@@ -1,6 +1,8 @@
 package com.weiz.trendify.controller;
 
 import com.weiz.trendify.service.dto.request.product.ProductDto;
+import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
+import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,8 +15,8 @@ public interface ProductController {
 
     @Operation(summary = "Get all products")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    Response<ProductDto> getProducts();
+    @PostMapping("/search")
+    Response<PagingResponse<ProductDto>> getProducts(@RequestBody final ProductSearchRequest request);
 
     @Operation(summary = "Get product")
     @ResponseStatus(HttpStatus.OK)

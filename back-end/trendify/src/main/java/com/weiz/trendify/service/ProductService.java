@@ -1,6 +1,8 @@
 package com.weiz.trendify.service;
 
 import com.weiz.trendify.service.dto.request.product.ProductDto;
+import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
@@ -9,7 +11,7 @@ public interface ProductService {
 
     ProductDto getProduct(@NonNull final Long productId);
 
-    List<ProductDto> getAllProducts();
+    Page<ProductDto> getAllProducts(final ProductSearchRequest request);
 
     ProductDto createProduct(@NonNull final ProductDto productDto);
 

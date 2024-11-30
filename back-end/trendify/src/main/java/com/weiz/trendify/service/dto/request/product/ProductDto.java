@@ -3,6 +3,8 @@ package com.weiz.trendify.service.dto.request.product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,8 +16,5 @@ public class ProductDto {
     String name;
     Double price;
     String defaultImage;
-
-//    public static ProductDto from(Product product) {
-//        return ProductDto.builder()
-//    }
+    Instant createdDate;
 }
