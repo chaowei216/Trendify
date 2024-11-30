@@ -16,5 +16,4 @@ public class ProductDto {
     String name;
     Double price;
     String defaultImage;
-    Instant createdDate;
 }
