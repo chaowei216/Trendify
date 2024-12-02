@@ -1,5 +1,7 @@
 package com.weiz.trendify.service.impl;
 
+import com.weiz.trendify.entity.enums.ProductStatus;
+import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.ProductRepository;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
@@ -47,6 +49,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(@NonNull final Long productId) {
+        log.info("Find product with id: {}", productId);
+        var product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product with id: " + productId + " not found"));
 
+        log.info("Delete product with id: {}", productId);
+        product.setStatus(ProductStatus.UNAVAILABLE);
+        productRepository.save(product);
     }
 }

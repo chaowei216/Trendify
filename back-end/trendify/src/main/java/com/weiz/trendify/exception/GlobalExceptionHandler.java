@@ -43,6 +43,27 @@ public class GlobalExceptionHandler implements ResponseErrorHandler {
         return internalServerError(new ErrorResponse(AppConst.SERVICE_ERROR.getCode(), AppConst.SERVICE_ERROR.getMessage(), map));
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("service", e.getMessage());
+        return badRequest(
+                new ErrorResponse(AppConst.BAD_REQUEST.getCode(), AppConst.BAD_REQUEST.getMessage(), map)
+        );
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(NotFoundException e) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("service", e.getMessage());
+        return notFound(
+                new ErrorResponse(AppConst.NOT_FOUND.getCode(), AppConst.NOT_FOUND.getMessage(), map)
+        );
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {

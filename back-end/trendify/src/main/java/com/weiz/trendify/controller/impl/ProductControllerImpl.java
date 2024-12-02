@@ -13,9 +13,7 @@ import com.weiz.trendify.service.dto.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,15 +45,12 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public Response<ProductDetailDto> getProduct(@NonNull final Long id) {
-        log.info("Product service: Get product with id: {}", id);
+        log.info("Product service: Get product request");
         return Response.ok(productService.getProduct(id));
     }
 
     @Override
     public Response<ProductDto> createProduct(@Valid ProductDto dto) {
-//        if(!ObjectUtils.isEmpty(dto.getId())) {
-//            throw new BusinessException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Id must be empty");
-//        }
         return null;
 
     }
@@ -67,6 +62,8 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public Response<Void> deleteProduct(Long id) {
-        return null;
+        log.info("Product service: Delete product request");
+        productService.deleteProduct(id);
+        return Response.noContent();
     }
 }

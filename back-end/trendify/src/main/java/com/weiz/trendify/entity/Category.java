@@ -29,6 +29,6 @@ public class Category extends BaseEntity<Integer> {
 
     @OneToMany(mappedBy = "category",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
+                    CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     List<Product> products;
 }
