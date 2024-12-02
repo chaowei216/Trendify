@@ -1,6 +1,7 @@
 package com.weiz.trendify.controller.impl;
 
 import com.weiz.trendify.controller.ProductController;
+import com.weiz.trendify.exception.BusinessException;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.dto.request.PagingRequest;
 import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
@@ -9,9 +10,12 @@ import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PageableData;
 import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,8 +52,12 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public Response<ProductDto> createProduct(ProductDto dto) {
+    public Response<ProductDto> createProduct(@Valid ProductDto dto) {
+//        if(!ObjectUtils.isEmpty(dto.getId())) {
+//            throw new BusinessException(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Id must be empty");
+//        }
         return null;
+
     }
 
     @Override
