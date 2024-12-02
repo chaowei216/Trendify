@@ -2,8 +2,10 @@ package com.weiz.trendify.service.impl;
 
 import com.weiz.trendify.repository.ProductRepository;
 import com.weiz.trendify.service.ProductService;
+import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.request.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
+import com.weiz.trendify.service.mapper.ProductDetailMapper;
 import com.weiz.trendify.service.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +20,13 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ProductDetailMapper productDetailMapper;
 
     @Override
-    public ProductDto getProduct(@NonNull final Long productId) {
-        return null;
+    public ProductDetailDto getProduct(@NonNull final Long productId) {
+        return productRepository.findById(productId)
+                .map(productDetailMapper::toDto)
+                .orElse(null);
     }
 
     @Override

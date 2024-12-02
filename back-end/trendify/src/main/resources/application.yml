@@ -2,7 +2,7 @@ spring:
   application:
     name: trendify
   datasource:
-    url: jdbc:mysql://172.16.0.226:3336/trendify
+    url: jdbc:mysql://192.168.1.216:3336/trendify
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver

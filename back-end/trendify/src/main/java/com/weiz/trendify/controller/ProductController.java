@@ -1,5 +1,6 @@
 package com.weiz.trendify.controller;
 
+import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.request.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PagingResponse;
@@ -21,7 +22,7 @@ public interface ProductController {
     @Operation(summary = "Get product")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    Response<ProductDto> getProduct(@PathVariable(name = "id") final Long id);
+    Response<ProductDetailDto> getProduct(@PathVariable(name = "id") final Long id);
 
     @Operation(summary = "Create product")
     @ResponseStatus(HttpStatus.CREATED)

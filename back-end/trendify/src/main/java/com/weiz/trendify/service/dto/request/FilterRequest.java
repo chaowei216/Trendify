@@ -1,4 +1,4 @@
-package com.weiz.trendify.service.dto.request.product;
+package com.weiz.trendify.service.dto.request;
 
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;

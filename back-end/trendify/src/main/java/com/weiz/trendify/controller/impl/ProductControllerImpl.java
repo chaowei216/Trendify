@@ -2,7 +2,8 @@ package com.weiz.trendify.controller.impl;
 
 import com.weiz.trendify.controller.ProductController;
 import com.weiz.trendify.service.ProductService;
-import com.weiz.trendify.service.dto.request.product.PagingRequest;
+import com.weiz.trendify.service.dto.request.PagingRequest;
+import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.request.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PageableData;
@@ -41,8 +42,9 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public Response<ProductDto> getProduct(@NonNull final Long id) {
-        return null;
+    public Response<ProductDetailDto> getProduct(@NonNull final Long id) {
+        log.info("Product service: Get product with id: {}", id);
+        return Response.ok(productService.getProduct(id));
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.weiz.trendify.service.dto.request.product;
 
 import com.weiz.trendify.entity.Product;
 import com.weiz.trendify.repository.specification.ProductSpecification;
+import com.weiz.trendify.service.dto.request.FilterRequest;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
