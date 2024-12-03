@@ -23,5 +23,5 @@ public class ProductCreateDto {
     MultipartFile imageFile;
 
     @NotNull
-    Long categoryId;
+    Integer categoryId;
 }
