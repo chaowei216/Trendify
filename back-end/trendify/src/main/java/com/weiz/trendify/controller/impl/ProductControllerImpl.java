@@ -1,11 +1,10 @@
 package com.weiz.trendify.controller.impl;
 
 import com.weiz.trendify.controller.ProductController;
-import com.weiz.trendify.exception.BusinessException;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.dto.request.PagingRequest;
-import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
-import com.weiz.trendify.service.dto.request.product.ProductDto;
+import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
+import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PageableData;
 import com.weiz.trendify.service.dto.response.PagingResponse;

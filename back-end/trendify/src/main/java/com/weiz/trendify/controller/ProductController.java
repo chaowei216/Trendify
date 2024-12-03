@@ -1,7 +1,7 @@
 package com.weiz.trendify.controller;
 
-import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
-import com.weiz.trendify.service.dto.request.product.ProductDto;
+import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
+import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;

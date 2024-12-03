@@ -4,20 +4,17 @@ import com.weiz.trendify.common.AppConst;
 import com.weiz.trendify.controller.error.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.ResponseErrorHandler;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler implements ResponseErrorHandler {
+public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorResponse> badRequest(ErrorResponse result) {
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
@@ -75,16 +72,5 @@ public class GlobalExceptionHandler implements ResponseErrorHandler {
                 "Validation exception", objResult);
 
         return badRequest(response);
-    }
-
-
-    @Override
-    public boolean hasError(ClientHttpResponse response) throws IOException {
-        return false;
-    }
-
-    @Override
-    public void handleError(ClientHttpResponse response) throws IOException {
-
     }
 }

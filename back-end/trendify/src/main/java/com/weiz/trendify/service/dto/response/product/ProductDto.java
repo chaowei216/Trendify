@@ -1,10 +1,8 @@
-package com.weiz.trendify.service.dto.request.product;
+package com.weiz.trendify.service.dto.response.product;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
 
 @Data
 @Builder
@@ -14,8 +12,14 @@ import java.time.Instant;
 public class ProductDto {
 
     Long id;
-    @NotBlank(message = "id must be empty")
+
+    @NotBlank(message = "name must not be empty")
+
     String name;
+
     Double price;
+
+    String description;
+
     String defaultImage;
 }

@@ -1,7 +1,7 @@
 package com.weiz.trendify.service.mapper;
 
 import com.weiz.trendify.entity.Product;
-import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
+import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import org.mapstruct.Mapper;
 
 @Mapper(

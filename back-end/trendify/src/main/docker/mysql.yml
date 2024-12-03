@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql/mysql-server
+    container_name: mysql-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345
+      - MYSQL_DATABASE=trendify
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=12345
+    restart: on-failure
+    ports:
+      - 3336:3306

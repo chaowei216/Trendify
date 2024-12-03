@@ -1,4 +1,4 @@
-package com.weiz.trendify.service.dto.request.product;
+package com.weiz.trendify.service.dto.response.product;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
