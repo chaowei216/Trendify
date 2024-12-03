@@ -3,6 +3,7 @@ package com.weiz.trendify.service.dto.response.product;
 import com.weiz.trendify.entity.enums.ESize;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder

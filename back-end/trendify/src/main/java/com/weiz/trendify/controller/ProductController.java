@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/products")
@@ -25,7 +26,7 @@ public interface ProductController {
     @Operation(summary = "Get product")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    Response<ProductDetailDto> getProduct(@PathVariable(name = "id") final Long id);
+    Response<ProductDetailDto> getProduct(@NonNull @PathVariable(name = "id") final Long id);
 
     @Operation(summary = "Create product")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,11 +36,11 @@ public interface ProductController {
     @Operation(summary = "Update product")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    Response<ProductDto> updateProduct(@PathVariable(name = "id") final Long id,
+    Response<ProductDto> updateProduct(@NonNull @PathVariable(name = "id") final Long id,
                                        @RequestBody final ProductDto dto);
 
     @Operation(summary = "Delete product")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    Response<Void> deleteProduct(@PathVariable(name = "id") final Long id);
+    Response<Void> deleteProduct(@NonNull @PathVariable(name = "id") final Long id);
 }

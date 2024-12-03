@@ -18,5 +18,6 @@ public class ProductDetailDto {
     String name;
     Double price;
     String description;
+    String defaultImage;
     List<ProductVariantDto> variants = new ArrayList<>();
 }

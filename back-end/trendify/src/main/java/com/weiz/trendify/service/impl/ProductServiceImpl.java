@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
 
         log.info("Product Service: save product");
         productRepository.save(product);
-        return null;
+        return productDetailMapper.toDto(product);
     }
 
     @Override
@@ -86,5 +86,10 @@ public class ProductServiceImpl implements ProductService {
         log.info("Product Service: delete product with id: {}", productId);
         product.setStatus(ProductStatus.UNAVAILABLE);
         productRepository.save(product);
+    }
+
+    @Override
+    public Product getProductById(@NonNull Long productId) {
+        return productRepository.findById(productId).orElse(null);
     }
 }

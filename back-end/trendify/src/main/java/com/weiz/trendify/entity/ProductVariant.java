@@ -40,7 +40,11 @@ public class ProductVariant extends BaseEntity<Long> {
     )
     Integer quantity;
 
-    @Column(name = "image_name")
+    @Column(
+            name = "image_name",
+            nullable = false,
+            columnDefinition = "text"
+    )
     String imageName;
 
     @ManyToOne(
