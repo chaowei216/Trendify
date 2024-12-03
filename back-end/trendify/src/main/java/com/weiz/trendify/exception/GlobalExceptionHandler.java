@@ -1,6 +1,6 @@
 package com.weiz.trendify.exception;
 
-import com.weiz.trendify.common.AppConst;
+import com.weiz.trendify.common.constants.AppConst;
 import com.weiz.trendify.controller.error.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

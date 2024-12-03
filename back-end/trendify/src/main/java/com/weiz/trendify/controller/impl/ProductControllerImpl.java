@@ -3,6 +3,7 @@ package com.weiz.trendify.controller.impl;
 import com.weiz.trendify.controller.ProductController;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.dto.request.PagingRequest;
+import com.weiz.trendify.service.dto.request.product.ProductCreateDto;
 import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
@@ -49,9 +50,9 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public Response<ProductDto> createProduct(@Valid ProductDto dto) {
-        return null;
-
+    public Response<ProductDetailDto> createProduct(@Valid ProductCreateDto dto) {
+        log.info("Product service: Create product request");
+        return Response.created(productService.createProduct(dto));
     }
 
     @Override

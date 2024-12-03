@@ -14,7 +14,6 @@ public class ProductDto {
     Long id;
 
     @NotBlank(message = "name must not be empty")
-
     String name;
 
     Double price;

@@ -1,5 +1,6 @@
 package com.weiz.trendify.controller;
 
+import com.weiz.trendify.service.dto.request.product.ProductCreateDto;
 import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/products")
@@ -27,8 +29,8 @@ public interface ProductController {
 
     @Operation(summary = "Create product")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    Response<ProductDto> createProduct(@Valid @RequestBody final ProductDto dto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    Response<ProductDetailDto> createProduct(@Valid final ProductCreateDto dto);
 
     @Operation(summary = "Update product")
     @ResponseStatus(HttpStatus.OK)

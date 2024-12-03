@@ -1,6 +1,10 @@
 spring:
   application:
     name: trendify
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:mysql://172.0.0.254:3336/trendify
     username: root
@@ -8,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
@@ -29,3 +33,10 @@ springdoc:
     path: /swagger-ui.html
   api-docs:
     path: /api-docs
+
+# minio
+integration:
+  minio:
+    access-key: OoeaO2H333E0EzGqayz4
+    secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
+    url: http://localhost:9000

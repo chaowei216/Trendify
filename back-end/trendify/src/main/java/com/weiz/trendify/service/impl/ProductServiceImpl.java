@@ -1,12 +1,16 @@
 package com.weiz.trendify.service.impl;
 
+import com.weiz.trendify.entity.Product;
 import com.weiz.trendify.entity.enums.ProductStatus;
 import com.weiz.trendify.exception.NotFoundException;
+import com.weiz.trendify.integration.minio.MinioChannel;
 import com.weiz.trendify.repository.ProductRepository;
 import com.weiz.trendify.service.ProductService;
+import com.weiz.trendify.service.dto.request.product.ProductCreateDto;
 import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
+import com.weiz.trendify.service.mapper.ProductCreateMapper;
 import com.weiz.trendify.service.mapper.ProductDetailMapper;
 import com.weiz.trendify.service.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +27,12 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final ProductDetailMapper productDetailMapper;
+    private final ProductCreateMapper productCreateMapper;
+    private final MinioChannel minioChannel;
 
     @Override
     public ProductDetailDto getProduct(@NonNull final Long productId) {
+        log.info("Product Service: get product with id: {}", productId);
         return productRepository.findById(productId)
                 .map(productDetailMapper::toDto)
                 .orElse(null);
@@ -33,12 +40,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductDto> getAllProducts(ProductSearchRequest request) {
+        log.info("Product Service: get all products");
         return productRepository.findAll(request.specification(), request.getPaging().pageable())
                 .map(productMapper::toDto);
     }
 
     @Override
-    public ProductDto createProduct(@NonNull final ProductDto productDto) {
+    public ProductDetailDto createProduct(@NonNull final ProductCreateDto productDto) {
+        log.info("Product Service: map dto request to entity");
+        final Product product = productCreateMapper.toEntity(productDto);
+        product.setStatus(ProductStatus.AVAILABLE);
+
+        log.info("Product Service: upload image");
+        product.setDefaultImage(minioChannel.upload(productDto.getImageFile()));
+
+        log.info("Product Service: save product");
+        productRepository.save(product);
         return null;
     }
 
@@ -49,11 +66,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(@NonNull final Long productId) {
-        log.info("Find product with id: {}", productId);
+        log.info("Product Service: find product with id: {}", productId);
         var product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product with id: " + productId + " not found"));
 
-        log.info("Delete product with id: {}", productId);
+        log.info("Product Service: delete product with id: {}", productId);
         product.setStatus(ProductStatus.UNAVAILABLE);
         productRepository.save(product);
     }
