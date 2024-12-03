@@ -1,0 +1,7 @@
+version: '3.8'
+name: trendify
+services:
+  mysql:
+    extends:
+      file: ./mysql.yml
+      service: mysql

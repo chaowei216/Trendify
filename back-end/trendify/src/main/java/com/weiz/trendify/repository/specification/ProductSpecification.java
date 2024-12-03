@@ -1,6 +1,7 @@
 package com.weiz.trendify.repository.specification;
 
 import com.weiz.trendify.entity.Product;
+import com.weiz.trendify.entity.enums.ProductStatus;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,22 @@ public final class ProductSpecification {
     private final String FIELD_PRICE = "price";
     private final String FIELD_CATEGORY = "category";
     private final String FIELD_CATEGORY_ID = "id";
+    private final String FIELD_STATUS = "status";
 
     private final List<Specification<Product>> specifications = new ArrayList<>();
 
-    public static ProductSpecification builder() { return new ProductSpecification(); }
+    public static ProductSpecification builder() {
+        return new ProductSpecification();
+    }
+
+    public ProductSpecification withStatus() {
+        specifications.add(
+                (root, query, criteriaBuilder) ->
+                        criteriaBuilder.notEqual(root.get(FIELD_STATUS), ProductStatus.UNAVAILABLE)
+        );
+
+        return this;
+    }
 
     public ProductSpecification withName(final String name) {
 
@@ -37,7 +50,7 @@ public final class ProductSpecification {
 
     public ProductSpecification withPrice(final Double fromPrice, final Double toPrice) {
 
-        if (fromPrice != null  && fromPrice > 0) {
+        if (fromPrice != null && fromPrice > 0) {
             specifications.add(
                     (root, query, criteriaBuilder) ->
                             criteriaBuilder.greaterThan(root.get(FIELD_PRICE), fromPrice)

@@ -1,12 +1,13 @@
 package com.weiz.trendify.controller;
 
-import com.weiz.trendify.service.dto.request.product.ProductDetailDto;
-import com.weiz.trendify.service.dto.request.product.ProductDto;
+import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
+import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public interface ProductController {
     @Operation(summary = "Create product")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    Response<ProductDto> createProduct(@RequestBody final ProductDto dto);
+    Response<ProductDto> createProduct(@Valid @RequestBody final ProductDto dto);
 
     @Operation(summary = "Update product")
     @ResponseStatus(HttpStatus.OK)

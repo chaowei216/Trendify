@@ -1,7 +1,6 @@
-package com.weiz.trendify.service.dto.request.product;
+package com.weiz.trendify.service.dto.response.product;
 
 import com.weiz.trendify.entity.enums.ESize;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
