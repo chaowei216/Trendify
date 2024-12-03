@@ -43,7 +43,10 @@ public class ProductVariant extends BaseEntity<Long> {
     @Column(name = "image_name")
     String imageName;
 
-    @ManyToOne
+    @ManyToOne(
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH}
+    )
     @JoinColumn(name = "product_id")
     private Product product;
 

@@ -24,6 +24,7 @@ public class ProductSearchRequest extends FilterRequest<Product> {
     @Override
     public Specification<Product> specification() {
         return ProductSpecification.builder()
+                .withStatus()
                 .withName(name)
                 .withCategory(categoryId)
                 .withPrice(fromPrice, toPrice)
