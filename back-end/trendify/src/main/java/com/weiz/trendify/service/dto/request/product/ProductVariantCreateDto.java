@@ -1,7 +1,6 @@
 package com.weiz.trendify.service.dto.request.product;
 
 import com.weiz.trendify.entity.enums.ESize;
-import com.weiz.trendify.validation.ValidEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
