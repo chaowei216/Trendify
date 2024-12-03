@@ -24,7 +24,7 @@ function App() {
       <div>
         <ToastContainer />
         <Routes>
-          <Route path="/product-details" element={<ProductDetail />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/product" element={<ViewProduct />} />
           <Route path="/" element={<HomePage />} />
