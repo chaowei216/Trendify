@@ -2,6 +2,7 @@ package com.weiz.trendify.service.dto.response.product;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,5 +17,7 @@ public class ProductDetailDto {
     Long id;
     String name;
     Double price;
+    String description;
+    String defaultImage;
     List<ProductVariantDto> variants = new ArrayList<>();
 }

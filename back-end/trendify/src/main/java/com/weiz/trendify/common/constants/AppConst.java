@@ -1,4 +1,4 @@
-package com.weiz.trendify.common;
+package com.weiz.trendify.common.constants;
 
 import com.weiz.trendify.controller.error.MessageCode;
 import lombok.AccessLevel;

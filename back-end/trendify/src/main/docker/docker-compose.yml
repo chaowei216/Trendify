@@ -5,3 +5,7 @@ services:
     extends:
       file: ./mysql.yml
       service: mysql
+  minio:
+    extends:
+      file: ./minio.yml
+      service: minio

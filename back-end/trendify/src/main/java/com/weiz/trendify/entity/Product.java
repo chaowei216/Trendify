@@ -37,7 +37,7 @@ public class Product extends BaseEntity<Long> {
     @Column(
             name = "default_image",
             nullable = false,
-            length = 50
+            columnDefinition = "text"
     )
     String defaultImage;
 
@@ -65,6 +65,6 @@ public class Product extends BaseEntity<Long> {
                     CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
             }
     )
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     Category category;
 }

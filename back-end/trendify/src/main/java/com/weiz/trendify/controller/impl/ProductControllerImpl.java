@@ -3,6 +3,7 @@ package com.weiz.trendify.controller.impl;
 import com.weiz.trendify.controller.ProductController;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.dto.request.PagingRequest;
+import com.weiz.trendify.service.dto.request.product.ProductCreateDto;
 import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
@@ -12,6 +13,7 @@ import com.weiz.trendify.service.dto.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,18 +51,18 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public Response<ProductDto> createProduct(@Valid ProductDto dto) {
-        return null;
-
+    public Response<ProductDetailDto> createProduct(@Valid ProductCreateDto dto) {
+        log.info("Product service: Create product request");
+        return Response.created(productService.createProduct(dto));
     }
 
     @Override
-    public Response<ProductDto> updateProduct(Long id, ProductDto dto) {
+    public Response<ProductDto> updateProduct(@NotNull Long id, ProductDto dto) {
         return null;
     }
 
     @Override
-    public Response<Void> deleteProduct(Long id) {
+    public Response<Void> deleteProduct(@NotNull Long id) {
         log.info("Product service: Delete product request");
         productService.deleteProduct(id);
         return Response.noContent();
