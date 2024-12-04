@@ -20,11 +20,22 @@ public final class ProductSpecification {
     private final String FIELD_CATEGORY = "category";
     private final String FIELD_CATEGORY_ID = "id";
     private final String FIELD_STATUS = "status";
+    private final String FIELD_VARIANT = "variants";
+    private final String FIELD_VARIANT_QUANTITY = "quantity";
 
     private final List<Specification<Product>> specifications = new ArrayList<>();
 
     public static ProductSpecification builder() {
         return new ProductSpecification();
+    }
+
+    public ProductSpecification withVariantQuantity() {
+        specifications.add(
+                (root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThan(root.get(FIELD_VARIANT).get(FIELD_VARIANT_QUANTITY), 0)
+        );
+
+        return this;
     }
 
     public ProductSpecification withStatus() {

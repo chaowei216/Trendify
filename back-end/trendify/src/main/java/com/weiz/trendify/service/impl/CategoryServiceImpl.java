@@ -36,6 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategory(int id) {
+        log.info("Category Service: get category: {}", id);
         return categoryRepository.findById(id).orElse(null);
     }
 }

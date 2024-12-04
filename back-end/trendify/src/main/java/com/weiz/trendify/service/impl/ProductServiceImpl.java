@@ -59,6 +59,10 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Category not found");
         }
 
+        // check if product exists
+        Product product = productRepository.fin
+
+
         log.info("Product Service: map dto request to entity");
         final Product product = productCreateMapper.toEntity(productDto);
         product.setStatus(ProductStatus.AVAILABLE);
@@ -90,6 +94,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(@NonNull Long productId) {
+        log.info("Product Service: find product: {}", productId);
         return productRepository.findById(productId).orElse(null);
     }
 }

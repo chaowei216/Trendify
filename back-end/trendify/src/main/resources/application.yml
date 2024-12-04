@@ -6,7 +6,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://172.0.0.254:3336/trendify
+    url: jdbc:mysql://172.0.0.187:3336/trendify
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver

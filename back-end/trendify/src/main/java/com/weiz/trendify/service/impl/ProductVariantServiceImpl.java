@@ -1,14 +1,13 @@
 package com.weiz.trendify.service.impl;
 
-import com.weiz.trendify.entity.Product;
 import com.weiz.trendify.entity.ProductVariant;
-import com.weiz.trendify.entity.enums.ProductStatus;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.integration.minio.MinioChannel;
 import com.weiz.trendify.repository.ProductVariantRepository;
 import com.weiz.trendify.service.ProductService;
 import com.weiz.trendify.service.ProductVariantService;
 import com.weiz.trendify.service.dto.request.product.ProductVariantCreateDto;
+import com.weiz.trendify.service.dto.request.product.ProductVariantUpdateDto;
 import com.weiz.trendify.service.dto.response.product.ProductVariantDto;
 import com.weiz.trendify.service.mapper.product.ProductVariantCreateMapper;
 import com.weiz.trendify.service.mapper.product.ProductVariantMapper;
@@ -16,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,7 +31,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     final ProductVariantMapper productVariantMapper;
 
     @Override
-    public ProductVariantDto create(ProductVariantCreateDto createDto) {
+    public ProductVariantDto create(@NotNull ProductVariantCreateDto createDto) {
         log.info("Product Variant Service: Check product");
         final var pro = productService.getProductById(createDto.getProductId());
 
@@ -52,7 +52,17 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     }
 
     @Override
-    public ProductVariantDto update(ProductVariantCreateDto updateDto) {
+    public ProductVariantDto update(@NotNull ProductVariantUpdateDto updateDto) {
         return null;
+    }
+
+    @Override
+    public void delete(@NotNull Long id) {
+        log.info("Product Variant Service: find product variant with id: {}", id);
+        var variant = productVariantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product Variant with id: " + id + " not found"));
+
+        log.info("Product Variant Service: delete product variant with id: {}", id);
+        productVariantRepository.delete(variant);
     }
 }
