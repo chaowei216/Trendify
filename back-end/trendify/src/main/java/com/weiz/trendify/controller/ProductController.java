@@ -9,6 +9,7 @@ import com.weiz.trendify.service.dto.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
@@ -36,11 +37,11 @@ public interface ProductController {
     @Operation(summary = "Update product")
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    Response<ProductDto> updateProduct(@NonNull @PathVariable(name = "id") final Long id,
-                                       @RequestBody final ProductDto dto);
+    Response<ProductDto> updateProduct(@NotNull @PathVariable(name = "id") final Long id,
+                                       @Valid @RequestBody final ProductDto dto);
 
     @Operation(summary = "Delete product")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    Response<Void> deleteProduct(@NonNull @PathVariable(name = "id") final Long id);
+    Response<Void> deleteProduct(@NotNull @PathVariable(name = "id") final Long id);
 }

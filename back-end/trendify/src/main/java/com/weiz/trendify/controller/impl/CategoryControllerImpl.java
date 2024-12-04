@@ -20,11 +20,13 @@ public class CategoryControllerImpl implements CategoryController {
 
     @Override
     public Response<List<CategoryDto>> getCategories() {
+        log.info("Category Controller: get all categories request...");
         return Response.ok(categoryService.getCategories());
     }
 
     @Override
     public Response<CategoryDto> getCategory(@NonNull int id) {
+        log.info("Category Controller: get category request...");
         return Response.ok(categoryService.getCategoryById(id));
     }
 }

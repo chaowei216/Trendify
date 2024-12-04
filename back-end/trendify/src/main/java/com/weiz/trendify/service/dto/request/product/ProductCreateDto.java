@@ -1,6 +1,7 @@
 package com.weiz.trendify.service.dto.request.product;
 
 import com.weiz.trendify.service.dto.response.product.ProductVariantDto;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -19,11 +20,13 @@ public class ProductCreateDto {
     String name;
 
     @NotNull
+    @DecimalMin(value = "0", message = "price must be greater than or equal to 0")
     Double price;
 
     @NotBlank
     String description;
 
+    @NotNull
     MultipartFile imageFile;
 
     @NotNull

@@ -28,7 +28,7 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public Response<PagingResponse<ProductDto>> getProducts(@RequestBody final ProductSearchRequest request) {
-        log.info("Product service: Get all products request");
+        log.info("Product Controller: get all products request");
         final Page<ProductDto> products = productService.getAllProducts(request);
         final PagingRequest paging = request.getPaging();
         return Response.ok(
@@ -46,13 +46,13 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public Response<ProductDetailDto> getProduct(@NonNull final Long id) {
-        log.info("Product service: Get product request");
+        log.info("Product Controller: get product request");
         return Response.ok(productService.getProduct(id));
     }
 
     @Override
     public Response<ProductDetailDto> createProduct(@Valid ProductCreateDto dto) {
-        log.info("Product service: Create product request");
+        log.info("Product Controller: create product request");
         return Response.created(productService.createProduct(dto));
     }
 
@@ -63,7 +63,7 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public Response<Void> deleteProduct(@NotNull Long id) {
-        log.info("Product service: Delete product request");
+        log.info("Product Controller: delete product request");
         productService.deleteProduct(id);
         return Response.noContent();
     }
