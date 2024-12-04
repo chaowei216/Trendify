@@ -1,5 +1,6 @@
 package com.weiz.trendify.entity;
 
+import com.weiz.trendify.entity.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +23,8 @@ public class Product extends BaseEntity<Long> {
 
     @Column(
             name = "product_name",
-            nullable = false
+            nullable = false,
+            length = 80
     )
     String name;
 
@@ -33,14 +35,28 @@ public class Product extends BaseEntity<Long> {
     Double price;
 
     @Column(
+            name = "default_image",
+            nullable = false,
+            columnDefinition = "text"
+    )
+    String defaultImage;
+
+    @Column(
             name = "description",
             nullable = false
     )
     String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "status",
+            nullable = false
+    )
+    ProductStatus status;
+
     @OneToMany(mappedBy = "product",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
+                    CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     List<ProductVariant> variants;
 
     @ManyToOne(
@@ -49,6 +65,6 @@ public class Product extends BaseEntity<Long> {
                     CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH
             }
     )
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     Category category;
 }
