@@ -59,10 +59,6 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Category not found");
         }
 
-        // check if product exists
-
-
-
         log.info("Product Service: map dto request to entity");
         final Product product = productCreateMapper.toEntity(productDto);
         product.setStatus(ProductStatus.AVAILABLE);

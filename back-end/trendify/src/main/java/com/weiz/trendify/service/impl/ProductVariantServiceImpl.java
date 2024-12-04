@@ -33,22 +33,35 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     @Override
     public ProductVariantDto create(@NotNull ProductVariantCreateDto createDto) {
         log.info("Product Variant Service: Check product");
+        // check if product exists
         final var pro = productService.getProductById(createDto.getProductId());
 
         if (pro == null) {
             throw new NotFoundException("Product Not Found");
         }
 
-        log.info("Product Variant Service: map dto request to entity");
-        final ProductVariant product = productVariantCreateMapper.toEntity(createDto);
-        product.setProduct(pro);
+        log.info("Product Variant Service: Check variant");
+        // check if variants exists (size, color, product)
+        ProductVariant variant = productVariantRepository.findBySizeAndColorAndProduct(createDto.getSize(), createDto.getColor(), pro);
+
+        if (variant != null) {
+
+            // case: EXIST - update quantity
+            variant.setQuantity(createDto.getQuantity() + variant.getQuantity());
+        } else {
+
+            // case: NOT EXIST - create new one
+            variant = productVariantCreateMapper.toEntity(createDto);
+            variant.setProduct(pro);
+        }
 
         log.info("Product Service: upload image");
-        product.setImageName(minioChannel.upload(createDto.getImageFile()));
+        variant.setImageName(minioChannel.upload(createDto.getImageFile()));
 
+        // save (CREATE or UPDATE)
         log.info("Product Service: save product");
-        productVariantRepository.save(product);
-        return productVariantMapper.toDto(product);
+        productVariantRepository.save(variant);
+        return productVariantMapper.toDto(variant);
     }
 
     @Override
