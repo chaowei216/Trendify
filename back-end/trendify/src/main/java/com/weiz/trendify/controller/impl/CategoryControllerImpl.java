@@ -6,7 +6,6 @@ import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.category.CategoryDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class CategoryControllerImpl implements CategoryController {
     }
 
     @Override
-    public Response<CategoryDto> getCategory(@NonNull int id) {
+    public Response<CategoryDto> getCategory(int id) {
         log.info("Category Controller: get category request...");
         return Response.ok(categoryService.getCategoryById(id));
     }

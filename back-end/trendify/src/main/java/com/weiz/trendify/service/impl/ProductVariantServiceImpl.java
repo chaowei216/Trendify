@@ -77,7 +77,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public ProductVariantDto update(@NotNull ProductVariantUpdateDto updateDto) {
         log.info("Product Variant Service [UPDATE]: Update variant processing...");
 
-        // check if variants exists
+        // check if variant exists
         ProductVariant variant = productVariantRepository.findById(updateDto.getId()).orElse(null);
 
         // case: NOT EXIST - throw error

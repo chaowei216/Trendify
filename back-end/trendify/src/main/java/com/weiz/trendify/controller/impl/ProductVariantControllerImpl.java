@@ -10,8 +10,6 @@ import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.product.ProductVariantDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -30,7 +28,7 @@ public class ProductVariantControllerImpl implements ProductVariantController {
     }
 
     @Override
-    public Response<ProductVariantDto> updateProductVariant(@NotNull Long id, @NotNull ProductVariantUpdateDto dto) {
+    public Response<ProductVariantDto> updateProductVariant(Long id, ProductVariantUpdateDto dto) {
         log.info("Product Variant Controller: update variant request...");
 
         if (!Objects.equals(id, dto.getId())) {
@@ -40,8 +38,9 @@ public class ProductVariantControllerImpl implements ProductVariantController {
         return Response.ok(productVariantService.update(dto));
     }
 
+
     @Override
-    public Response<ProductVariantDto> updateImage(@NotNull Long id, @NotNull VariantUpdateImageDto dto) {
+    public Response<Void> updateImage(Long id, VariantUpdateImageDto dto) {
         log.info("Product Variant Controller: update variant image request...");
 
         if (!Objects.equals(id, dto.getId())) {
@@ -55,7 +54,7 @@ public class ProductVariantControllerImpl implements ProductVariantController {
     }
 
     @Override
-    public Response<Void> deleteProductVariant(@NotNull Long id) {
+    public Response<Void> deleteProductVariant(Long id) {
         log.info("Product Variant Controller: delete variant request...");
         productVariantService.delete(id);
         return Response.noContent();

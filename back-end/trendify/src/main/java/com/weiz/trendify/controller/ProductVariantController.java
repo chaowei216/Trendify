@@ -24,14 +24,14 @@ public interface ProductVariantController {
 
     @Operation(summary = "Update product variant")
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value ="/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping("/{id}")
     Response<ProductVariantDto> updateProductVariant(@NotNull @PathVariable(name = "id") final Long id,
-                                                     @Valid final ProductVariantUpdateDto dto);
+                                                     @Valid final @RequestBody ProductVariantUpdateDto dto);
 
     @Operation(summary = "Update product variant image")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value ="/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Response<ProductVariantDto> updateImage(@NotNull @PathVariable(name = "id") final Long id,
+    Response<Void> updateImage(@NotNull @PathVariable(name = "id") final Long id,
                                             @Valid final VariantUpdateImageDto dto);
 
     @Operation(summary = "Delete product variant")
