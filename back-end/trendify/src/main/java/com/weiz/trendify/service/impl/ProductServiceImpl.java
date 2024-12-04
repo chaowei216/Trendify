@@ -60,7 +60,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // check if product exists
-        Product product = productRepository.fin
+
 
 
         log.info("Product Service: map dto request to entity");
