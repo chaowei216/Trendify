@@ -3,14 +3,16 @@ package com.weiz.trendify.service.dto.request.product;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductCreateDto {
+public class ProductUpdateDto {
+
+    @NotNull
+    Long id;
 
     @NotBlank(message = "name must not be empty")
     String name;
@@ -21,10 +23,4 @@ public class ProductCreateDto {
 
     @NotBlank
     String description;
-
-    @NotNull
-    MultipartFile imageFile;
-
-    @NotNull
-    Integer categoryId;
 }

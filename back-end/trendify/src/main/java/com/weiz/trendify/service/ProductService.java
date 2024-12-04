@@ -2,6 +2,8 @@ package com.weiz.trendify.service;
 
 import com.weiz.trendify.entity.Product;
 import com.weiz.trendify.service.dto.request.product.ProductCreateDto;
+import com.weiz.trendify.service.dto.request.product.ProductImageUpdateDto;
+import com.weiz.trendify.service.dto.request.product.ProductUpdateDto;
 import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
 import com.weiz.trendify.service.dto.response.product.ProductDto;
 import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
@@ -16,7 +18,9 @@ public interface ProductService {
 
     ProductDetailDto createProduct(@NonNull final ProductCreateDto productDto);
 
-    ProductDto updateProduct(@NonNull final ProductDto productDto);
+    ProductDto updateProduct(@NonNull final ProductUpdateDto dto);
+
+    void updateImage(@NonNull final ProductImageUpdateDto dto);
 
     void deleteProduct(@NonNull final Long productId);
 
