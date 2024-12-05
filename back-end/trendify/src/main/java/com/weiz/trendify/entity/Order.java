@@ -83,7 +83,6 @@ public class Order extends BaseEntity<Long> {
     Account account;
 
     @OneToMany(mappedBy = "order",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
+            cascade = CascadeType.ALL)
     List<OrderDetail> orderDetails;
 }

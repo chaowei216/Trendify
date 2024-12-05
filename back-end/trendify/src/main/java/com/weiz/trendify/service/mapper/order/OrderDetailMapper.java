@@ -7,7 +7,8 @@ import com.weiz.trendify.service.mapper.MapperConfig;
 import org.mapstruct.Mapper;
 
 @Mapper(
-        config = MapperConfig.class
+        config = MapperConfig.class,
+        uses = {OrderItemMapper.class}
 )
 public interface OrderDetailMapper extends EntityMapper<OrderDetailDto, Order> {
 }
