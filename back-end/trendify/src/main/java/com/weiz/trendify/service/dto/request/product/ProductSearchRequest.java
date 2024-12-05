@@ -17,8 +17,6 @@ public class ProductSearchRequest extends FilterRequest<Product> {
     String name;
     Double fromPrice;
     Double toPrice;
-    String sort;
-    String size;
     Long categoryId;
 
     @Override

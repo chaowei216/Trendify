@@ -63,6 +63,7 @@ public class Order extends BaseEntity<Long> {
     )
     Double totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(
             name = "status",
             nullable = false
