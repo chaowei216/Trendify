@@ -4,14 +4,11 @@ import com.weiz.trendify.service.dto.request.category.CategoryCreateDto;
 import com.weiz.trendify.service.dto.request.category.CategoryUpdateDto;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.category.CategoryDto;
-import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
-import com.weiz.trendify.service.dto.response.product.ProductDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +25,7 @@ public interface CategoryController {
     @Operation(summary = "Get category")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    Response<CategoryDto> getCategory(@NonNull @PathVariable(name = "id") final int id);
+    Response<CategoryDto> getCategory(@NotNull @PathVariable(name = "id") final int id);
 
     @Operation(summary = "Create category")
     @ResponseStatus(HttpStatus.CREATED)
