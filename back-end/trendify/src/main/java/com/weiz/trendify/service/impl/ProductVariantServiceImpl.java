@@ -31,7 +31,6 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     final ProductVariantRepository productVariantRepository;
     final ProductService productService;
     final ProductVariantCreateMapper productVariantCreateMapper;
-    final ProductVariantUpdateMapper productVariantUpdateMapper;
     final MinioChannel minioChannel;
     final ProductVariantMapper productVariantMapper;
 
@@ -125,5 +124,11 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
         log.info("Product Variant Service [DELETE]: delete variant");
         productVariantRepository.delete(variant);
+    }
+
+    @Override
+    public ProductVariant getById(@NotNull Long id) {
+        log.info("Product Variant Service [GET]: Get variant with {} processing...", id);
+        return productVariantRepository.findById(id).orElse(null);
     }
 }

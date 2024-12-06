@@ -6,7 +6,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://192.168.88.13:3336/trendify
+    url: jdbc:mysql://172.0.1.75:3336/trendify
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -40,3 +40,10 @@ integration:
     access-key: OoeaO2H333E0EzGqayz4
     secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
     url: http://localhost:9000
+  vnpay:
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    returnUrl: http://localhost:5172
+    tmnCode: 0QZQV8BP
+    secretKey: JJSTFUGWAP8WBD9JM0MQTLJFP7XA66JI
+    version: 2.1.0
+    command: pay
