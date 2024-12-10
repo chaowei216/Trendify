@@ -6,13 +6,13 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://172.0.1.75:3336/trendify
+    url: jdbc:mysql://172.0.1.85:3336/trendify
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -47,3 +47,11 @@ integration:
     secretKey: JJSTFUGWAP8WBD9JM0MQTLJFP7XA66JI
     version: 2.1.0
     command: pay
+
+# jwt
+jwt:
+  secretKey: G2PaZgX9HcYPoyByu48NJpmmStYfdk1t0JZtGhlk5oY=
+  expiration: 10000
+  refreshDuration: 10000
+  issuer: localhost:8080
+  audience: localhost:5172
