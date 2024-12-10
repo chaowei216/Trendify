@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import shirtmacdinh from "../assets/2.png"
 import { viewProducts } from "../utils/api";
 
 const ViewProduct = () => {
@@ -10,11 +9,11 @@ const ViewProduct = () => {
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [priceRange, setPriceRange] = useState('all');
-    const [category, setCategory] = useState('all');
-    const [size, setSize] = useState('all');
-    const [sortOrder, setSortOrder] = useState('default');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [priceRange, setPriceRange] = useState("all");
+    const [category, setCategory] = useState("all");
+    const [size, setSize] = useState("all");
+    const [sortOrder, setSortOrder] = useState("default");
+    const [searchInput, setSearchInput] = useState("");
 
     const itemsPerPage = 8;
 
@@ -24,19 +23,36 @@ const ViewProduct = () => {
                 paging: {
                     page: currentPage,
                     size: itemsPerPage,
-                    orders: {}
-                }
+                    orders: {},
+                },
+                name: searchInput || undefined,
+                fromPrice:
+                    priceRange === "all"
+                        ? undefined
+                        : parseInt(priceRange.split("-")[0]),
+                toPrice:
+                    priceRange === "all"
+                        ? undefined
+                        : parseInt(priceRange.split("-")[1] || Number.MAX_SAFE_INTEGER),
+                sort: sortOrder === "default" ? undefined : sortOrder,
+                size: size === "all" ? undefined : size,
+                categoryId: category === "all" ? undefined : parseInt(category),
             };
 
-            const data = await viewProducts(requestBody);
-            console.log("API Response:", data);
-            if (data.data && data.data.contents) {
-                setProducts(data.data.contents);
-                const totalPages = data.data.paging ? data.data.paging.totalPage : 1;
-                setTotalPages(totalPages);
+
+            Object.keys(requestBody).forEach(
+                (key) =>
+                    requestBody[key] === undefined && delete requestBody[key]
+            );
+
+            console.log("Request Body:", JSON.stringify(requestBody, null, 2));
+            const { data } = await viewProducts(requestBody);
+            if (data && data.contents) {
+                setProducts(data.contents);
+                setTotalPages(data.paging ? data.paging.totalPage : 1);
             }
         } catch (error) {
-            console.error('Error fetching products:', error);
+            console.error("Error fetching products:", error);
             setProducts([]);
             setTotalPages(1);
         }
@@ -44,34 +60,26 @@ const ViewProduct = () => {
 
     useEffect(() => {
         getProducts();
-    }, [currentPage, priceRange, category, size, sortOrder, searchQuery]);
+    }, [currentPage]);
 
-    const getPriceRangeValues = () => {
-        switch (priceRange) {
-            case '0-300000':
-                return { min: 0, max: 300000 };
-            case '300000-500000':
-                return { min: 300000, max: 500000 };
-            case '500000-1000000':
-                return { min: 500000, max: 1000000 };
-            case '1000000':
-                return { min: 1000000, max: null };
-            default:
-                return { min: 0, max: 0 };
-        }
-    };
-
-    const handleViewDetail = (productId) => {
-        navigate(`/product/${productId}`);
+    const handleSearchAPI = () => {
+        setCurrentPage(1);
+        getProducts();
     };
 
     const clearAllFilters = () => {
-        setPriceRange('all');
-        setCategory('all');
-        setSize('all');
-        setSortOrder('default');
-        setSearchQuery('');
-
+        setSearchParams({
+            page: 1,
+            size: itemsPerPage,
+            orders: {},
+            name: "",
+            fromPrice: undefined,
+            toPrice: undefined,
+            sort: undefined,
+            size: undefined,
+            categoryId: undefined
+        });
+        getProducts();
     };
 
     return (
@@ -82,7 +90,9 @@ const ViewProduct = () => {
                 <div className="max-w-7xl mx-auto px-4 pt-12">
                     <div className="text-center">
                         <h1 className="text-4xl font-bold mb-4">Bộ Sưu Tập Mới</h1>
-                        <p className="text-lg text-gray-300">Trở thành phiên bản tốt nhất của bạn</p>
+                        <p className="text-lg text-gray-300">
+                            Trở thành phiên bản tốt nhất của bạn
+                        </p>
                     </div>
                 </div>
             </div>
@@ -90,13 +100,22 @@ const ViewProduct = () => {
             {/* Filter Section */}
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <div className="flex flex-wrap gap-4 mb-8">
-                    <input
-                        type="text"
-                        placeholder="Tìm kiếm sản phẩm..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="px-4 py-2 border rounded-lg"
-                    />
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm sản phẩm..."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            className="px-4 py-2 border rounded-lg w-64"
+                        />
+                        <button
+                            onClick={handleSearchAPI}
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                        >
+                            Tìm
+                        </button>
+                    </div>
+
                     <select
                         value={priceRange}
                         onChange={(e) => setPriceRange(e.target.value)}
@@ -106,9 +125,39 @@ const ViewProduct = () => {
                         <option value="0-300000">0đ - 300,000đ</option>
                         <option value="300000-500000">300,000đ - 500,000đ</option>
                         <option value="500000-1000000">500,000đ - 1,000,000đ</option>
-                        <option value="1000000">Trên 1,000,000đ</option>
+                        <option value="1000000-">Trên 1,000,000đ</option>
                     </select>
-                    {/* Các filter khác giữ nguyên */}
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="px-4 py-2 border rounded-lg"
+                    >
+                        <option value="all">Loại</option>
+                        <option value="hoodie">Áo Thun</option>
+                        <option value="tshirt">Áo Sơ Mi</option>
+                        <option value="accessories">Áo Khoác</option>
+                    </select>
+                    <select
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
+                        className="px-4 py-2 border rounded-lg"
+                    >
+                        <option value="all">Kích thước</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <select
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                        className="px-4 py-2 border rounded-lg"
+                    >
+                        <option value="default">Thứ tự</option>
+                        <option value="price-asc">Giá tăng dần</option>
+                        <option value="price-desc">Giá giảm dần</option>
+                    </select>
+
                     <button
                         onClick={clearAllFilters}
                         className="px-4 py-2 bg-black text-white rounded-lg"
@@ -120,10 +169,15 @@ const ViewProduct = () => {
                 {/* Product Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {products.map((product) => (
-                        <div key={product.id} className="group cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+
+                        <div
+                            key={product.id}
+                            className="group cursor-pointer"
+                            onClick={() => navigate(`/product/${product.id}`)}
+                        >
                             <div className="relative overflow-hidden rounded-lg">
                                 <img
-                                    src={shirtmacdinh}
+                                    src={product.defaultImage}
                                     alt={product.name}
                                     className="w-full h-auto transition duration-300 group-hover:scale-105"
                                 />
@@ -135,7 +189,9 @@ const ViewProduct = () => {
                             </div>
                             <div className="mt-4">
                                 <h3 className="text-lg font-light">{product.name}</h3>
-                                <p className="text-lg font-medium mt-1">{product.price?.toLocaleString()} đ</p>
+                                <p className="text-lg font-medium mt-1">
+                                    {product.price?.toLocaleString()} đ
+                                </p>
                             </div>
                         </div>
                     ))}
@@ -145,26 +201,26 @@ const ViewProduct = () => {
                 {totalPages > 1 && (
                     <div className="flex justify-center mt-8 gap-2">
                         <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
                             className="px-4 py-2 border rounded-lg disabled:opacity-50"
                         >
                             Trước
                         </button>
-                        {[...Array(totalPages)].map((_, i) => (
+                        {[...Array(totalPages).keys()].map((page) => (
                             <button
-                                key={i}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={`px-4 py-2 rounded-lg ${currentPage === i + 1
-                                    ? 'bg-black text-white'
-                                    : 'border'
+                                key={page}
+                                onClick={() => setCurrentPage(page + 1)}
+                                className={`px-4 py-2 border rounded-lg ${currentPage === page + 1 ? "bg-black text-white" : ""
                                     }`}
                             >
-                                {i + 1}
+                                {page + 1}
                             </button>
                         ))}
                         <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            onClick={() =>
+                                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                            }
                             disabled={currentPage === totalPages}
                             className="px-4 py-2 border rounded-lg disabled:opacity-50"
                         >
