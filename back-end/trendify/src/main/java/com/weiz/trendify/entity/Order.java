@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class Order extends BaseEntity<Long> {
             name = "order_date",
             nullable = false
     )
-    Date orderDate;
+    Instant orderDate;
 
     @Column(
             name = "total_price",
