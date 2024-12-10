@@ -1,5 +1,6 @@
 package com.weiz.trendify.service;
 
+import com.weiz.trendify.entity.ProductVariant;
 import com.weiz.trendify.service.dto.request.product.ProductVariantCreateDto;
 import com.weiz.trendify.service.dto.request.product.ProductVariantUpdateDto;
 import com.weiz.trendify.service.dto.request.product.VariantUpdateImageDto;
@@ -16,4 +17,6 @@ public interface ProductVariantService {
     void updateImageVariant(@NonNull final VariantUpdateImageDto dto);
 
     void delete(@NonNull final Long id);
+
+    ProductVariant getById(@NonNull final Long id);
 }

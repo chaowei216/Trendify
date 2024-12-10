@@ -1,9 +1,11 @@
 package com.weiz.trendify.entity;
 
+import com.weiz.trendify.entity.enums.TokenTypeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -26,17 +28,18 @@ public class Token extends BaseEntity<Long> {
     )
     String token;
 
+    @Enumerated(EnumType.STRING)
     @Column(
             name = "token_type",
             nullable = false
     )
-    String tokenType;
+    TokenTypeEnum tokenType;
 
     @Column(
             name = "expiration_date",
             nullable = false
     )
-    Date expirationDate;
+    Instant expirationDate;
 
     @Column(
             name = "is_revoked"

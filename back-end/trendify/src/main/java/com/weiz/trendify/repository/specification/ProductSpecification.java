@@ -48,7 +48,7 @@ public final class ProductSpecification {
     }
 
     public ProductSpecification withName(final String name) {
-
+        System.out.println("here");
         if (!ObjectUtils.isEmpty(name)) {
             specifications.add(
                     (root, query, criteriaBuilder) ->
@@ -60,18 +60,17 @@ public final class ProductSpecification {
     }
 
     public ProductSpecification withPrice(final Double fromPrice, final Double toPrice) {
-
         if (fromPrice != null && fromPrice > 0) {
             specifications.add(
                     (root, query, criteriaBuilder) ->
-                            criteriaBuilder.greaterThan(root.get(FIELD_PRICE), fromPrice)
+                            criteriaBuilder.greaterThanOrEqualTo(root.get(FIELD_PRICE), fromPrice)
             );
         }
 
         if (toPrice != null && toPrice > 0) {
             specifications.add(
                     (root, query, criteriaBuilder) ->
-                            criteriaBuilder.lessThan(root.get(FIELD_PRICE), toPrice)
+                            criteriaBuilder.lessThanOrEqualTo(root.get(FIELD_PRICE), toPrice)
             );
         }
 
@@ -79,7 +78,6 @@ public final class ProductSpecification {
     }
 
     public ProductSpecification withCategory(final Long categoryId) {
-
         if (categoryId != null && categoryId > 0) {
             specifications.add(
                     (root, query, criteriaBuilder) ->

@@ -44,9 +44,16 @@ public class ProductServiceImpl implements ProductService {
         log.info("Product Service [GET]: get product with id: {} processing...", productId);
 
         // find product by id
-        return productRepository.findById(productId)
-                .map(productDetailMapper::toDto)
+        var product = productRepository.findById(productId)
                 .orElse(null);
+
+        if (product == null) {
+            // case NOT EXIST - throw error
+            throw new NotFoundException("Product not found");
+        }
+
+        // case EXIST - return result
+        return productDetailMapper.toDto(product);
     }
 
     @Override
