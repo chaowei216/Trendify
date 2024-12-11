@@ -27,6 +27,7 @@ public class VnPayServiceImpl implements VnPayService {
         vnpParamsMap.put("vnp_Amount", String.valueOf(order.getTotalPrice().intValue() * 100L));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang tai Trendify");
         vnpParamsMap.put("vnp_IpAddr", "127.0.0.1");
+        vnpParamsMap.replace("vnp_ReturnUrl", properties.getReturnUrl() + "?orderId=" + order.getId());
 
         //build query url
         String queryUrl = VnPayUtils.getPaymentURL(vnpParamsMap, true);

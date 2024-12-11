@@ -29,8 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         // create order
         Order order = Order.builder()
                 .address(user.getAddress())
-                .orderDate(new Date())
+                .orderDate(Instant.now())
                 .totalPrice(orderDto.getTotalPrice())
                 .email(user.getEmail())
                 .status(OrderStatus.PENDING) // Set status to PENDING
