@@ -16,5 +16,5 @@ public class RegisterResponse {
 
     String email;
 
-    String address;
+    String status;
 }
