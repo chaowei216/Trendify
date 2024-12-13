@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class Account extends BaseEntity<Long> {
     @Column(
             name = "password",
             nullable = false,
-            length = 30
+            columnDefinition = "text"
     )
     String password;
 
@@ -60,7 +61,7 @@ public class Account extends BaseEntity<Long> {
             name = "date_of_birth",
             nullable = false
     )
-    Date dateOfBirth;
+    Instant dateOfBirth;
 
     @Column(
             name = "email",
