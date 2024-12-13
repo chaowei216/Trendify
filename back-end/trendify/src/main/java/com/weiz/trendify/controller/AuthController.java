@@ -1,8 +1,6 @@
 package com.weiz.trendify.controller;
 
-import com.weiz.trendify.service.dto.request.auth.LoginRequest;
-import com.weiz.trendify.service.dto.request.auth.RegisterRequest;
-import com.weiz.trendify.service.dto.request.auth.TokenRequest;
+import com.weiz.trendify.service.dto.request.auth.*;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.auth.LoginResponse;
 import com.weiz.trendify.service.dto.response.auth.RegisterResponse;
@@ -36,4 +34,14 @@ public interface AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/refresh-token")
     Response<TokenResponse> refreshToken(@Valid @RequestBody TokenRequest request);
+
+    @Operation(summary = "Verify email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/verify-email")
+    Response<Void> verifyEmail(@Valid @RequestBody VerifyEmailRequest request);
+
+    @Operation(summary = "Confirm email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/confirm-email")
+    Response<Void> confirmEmail(@Valid @RequestBody ConfirmEmailRequest request);
 }
