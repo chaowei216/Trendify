@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import { useParams } from 'react-router-dom';
 import product1 from '../assets/2.png';
 import { getProductDetail } from '../utils/api';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const ProductDetail = () => {
     const { id } = useParams();
@@ -38,7 +40,7 @@ const ProductDetail = () => {
                 v => v.size === selectedSize && v.color === selectedColor
             );
             setAvailableQuantity(variant ? variant.quantity : 0);
-            setQuantity(1); // Reset quantity when selection changes
+            setQuantity(1);
         }
     }, [selectedSize, selectedColor, productData]);
 
@@ -50,20 +52,52 @@ const ProductDetail = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-2xl">Đang tải...</div>
-            </div>
+    const addToCart = () => {
+        if (!selectedSize || !selectedColor) {
+            toast.warning('Vui lòng chọn size và màu sắc!');
+            return;
+        }
+
+        const existingCart = JSON.parse(Cookies.get('cart') || '[]');
+
+        const existingProductIndex = existingCart.findIndex(item =>
+            item.id === productData.id &&
+            item.size === selectedSize &&
+            item.color === selectedColor
         );
+
+        if (existingProductIndex !== -1) {
+            const updatedCart = [...existingCart];
+            updatedCart[existingProductIndex].quantity += quantity;
+            updatedCart[existingProductIndex].totalPrice =
+                updatedCart[existingProductIndex].quantity * productData.price;
+
+            Cookies.set('cart', JSON.stringify(updatedCart), { expires: 7 });
+            toast.success('Đã cập nhật số lượng trong giỏ hàng!');
+        } else {
+            const newItem = {
+                id: productData.id,
+                name: productData.name,
+                price: productData.price,
+                image: productData.image || product1,
+                size: selectedSize,
+                color: selectedColor,
+                quantity: quantity,
+                totalPrice: productData.price * quantity
+            };
+
+            const updatedCart = [...existingCart, newItem];
+            Cookies.set('cart', JSON.stringify(updatedCart), { expires: 7 });
+            toast.success('Đã thêm vào giỏ hàng!');
+        }
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
     }
 
     if (!productData) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-2xl">Không tìm thấy sản phẩm</div>
-            </div>
-        );
+        return <div>Product not found</div>;
     }
 
     return (
@@ -76,7 +110,7 @@ const ProductDetail = () => {
                         <div className="space-y-6">
                             <div className="aspect-w-1 aspect-h-1 bg-white rounded-xl overflow-hidden">
                                 <img
-                                    src={product1}
+                                    src={productData.image || product1}
                                     alt={productData.name}
                                     className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
                                 />
@@ -97,9 +131,9 @@ const ProductDetail = () => {
                                 <div>
                                     <h3 className="text-lg font-sans text-gray-900 mb-3">Kích thước</h3>
                                     <div className="flex gap-3">
-                                        {Array.from(new Set(productData.variants.map(v => v.size))).map(size => (
+                                        {[...new Set(productData.variants.map(v => v.size))].map((size, index) => (
                                             <button
-                                                key={size}
+                                                key={`size-${index}-${size}`}
                                                 onClick={() => setSelectedSize(size)}
                                                 className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 
                                                     ${selectedSize === size
@@ -118,9 +152,9 @@ const ProductDetail = () => {
                                 <div>
                                     <h3 className="text-lg font-sans text-gray-900 mb-3">Màu sắc</h3>
                                     <div className="flex gap-3">
-                                        {Array.from(new Set(productData.variants.map(v => v.color))).map(color => (
+                                        {[...new Set(productData.variants.map(v => v.color))].map((color, index) => (
                                             <button
-                                                key={color}
+                                                key={`color-${index}-${color}`}
                                                 onClick={() => setSelectedColor(color)}
                                                 className={`px-6 py-3 rounded-lg font-sans transition-all duration-200
                                                     ${selectedColor === color
@@ -167,6 +201,7 @@ const ProductDetail = () => {
 
                             {/* Add to Cart Button */}
                             <button
+                                onClick={addToCart}
                                 className={`w-full py-4 rounded-xl font-sans text-lg transition-colors duration-200 transform hover:scale-[1.02]
                                     ${selectedSize && selectedColor && availableQuantity > 0
                                         ? 'bg-black text-white hover:bg-gray-900'
