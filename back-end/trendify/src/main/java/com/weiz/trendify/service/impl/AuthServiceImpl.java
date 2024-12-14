@@ -1,16 +1,17 @@
 package com.weiz.trendify.service.impl;
 
 import com.weiz.trendify.entity.Account;
+import com.weiz.trendify.entity.Token;
 import com.weiz.trendify.entity.enums.ERole;
 import com.weiz.trendify.entity.enums.UserStatus;
 import com.weiz.trendify.exception.BadRequestException;
+import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.AccountRepository;
 import com.weiz.trendify.repository.RoleRepository;
 import com.weiz.trendify.security.jwt.TokenProvider;
 import com.weiz.trendify.service.AuthService;
-import com.weiz.trendify.service.dto.request.auth.LoginRequest;
-import com.weiz.trendify.service.dto.request.auth.RegisterRequest;
-import com.weiz.trendify.service.dto.request.auth.TokenRequest;
+import com.weiz.trendify.service.EmailService;
+import com.weiz.trendify.service.dto.request.auth.*;
 import com.weiz.trendify.service.dto.response.auth.LoginResponse;
 import com.weiz.trendify.service.dto.response.auth.RegisterResponse;
 import com.weiz.trendify.service.dto.response.auth.TokenResponse;
@@ -20,11 +21,14 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -37,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
     AuthenticationManagerBuilder authenticationManagerBuilder;
     RoleRepository roleRepository;
     TokenProvider tokenProvider;
+    EmailService emailService;
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -107,5 +112,43 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(tokenProvider.generateToken(SecurityContextHolder.getContext().getAuthentication()))
                 .refreshToken(tokenProvider.generateRefreshToken(account).getToken())
                 .build();
+    }
+
+    @Override
+    public void sendVerifyEmail(@NotNull VerifyEmailRequest request) {
+
+        // get user by email
+        final var user = accountRepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // check status
+        if (user.getStatus() != UserStatus.NOT_VERIFIED) {
+            throw new BadRequestException("Email has already been verified");
+        }
+
+        // generate random token 6-digits
+        final var token = tokenProvider.generateVerifyToken(user);
+
+        emailService.sendTokenVerificationEmail(user, token.getToken());
+    }
+
+    @Override
+    public void confirmEmail(@NotNull ConfirmEmailRequest request) {
+
+        // get user by email
+        final var user = accountRepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // check status
+        if (user.getStatus() != UserStatus.NOT_VERIFIED) {
+            throw new BadRequestException("Email has already been verified");
+        }
+
+        // check token
+        tokenProvider.validateVerifyToken(request.token());
+
+        // update status
+        user.setStatus(UserStatus.ACTIVE);
+        accountRepository.save(user);
     }
 }

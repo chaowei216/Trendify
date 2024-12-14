@@ -5,6 +5,7 @@ import com.weiz.trendify.entity.Account;
 import com.weiz.trendify.entity.Token;
 import com.weiz.trendify.entity.enums.TokenTypeEnum;
 import com.weiz.trendify.exception.BadRequestException;
+import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.TokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -126,12 +127,70 @@ public class TokenProvider {
         if (token.getIsRevoked() && token.getIsExpired())
             throw new BadCredentialsException(INVALID_REFRESH_TOKEN);
 
+        if (token.getExpirationDate().isBefore(Instant.now())) {
+            revokeToken(token);
+            throw new BadRequestException(INVALID_REFRESH_TOKEN);
+        }
+    }
+
+    public Token generateVerifyToken(Account account) {
+        final var existingTokens = account.getTokens()
+                .stream()
+                .filter(t -> !t.getIsExpired() && !t.getIsRevoked() && t.getExpirationDate().isAfter(Instant.now())
+                                && t.getTokenType() == TokenTypeEnum.VERIFY_CODE).collect(Collectors.toSet());
+
+        // revoke token
+        existingTokens.forEach(this::revokeToken);
+
+        final var token = generateToken();
+
+        Token dbToken = Token.builder()
+                .account(account)
+                .tokenType(TokenTypeEnum.VERIFY_CODE)
+                .token(token)
+                .isExpired(false)
+                .isRevoked(false)
+                .expirationDate(Instant.now().plusMillis(1000 * 60 * 15))
+                .build();
+
+        tokenRepository.save(dbToken);
+        return dbToken;
+    }
+
+    public Token getVerifyToken(String token) {
+        return tokenRepository.findByToken(token).orElse(null);
+    }
+
+    public void validateVerifyToken(String token) {
+        final var dbToken = getVerifyToken(token);
+
+        if (dbToken == null) {
+            throw new NotFoundException(INVALID_JWT_TOKEN);
+        }
+
+        if (dbToken.getIsExpired() || dbToken.getIsRevoked())
+            throw new BadRequestException(INVALID_REFRESH_TOKEN);
+
+        if (dbToken.getExpirationDate().isBefore(Instant.now())) {
+            // revoke if it has any problems
+            revokeToken(dbToken);
+            throw new BadRequestException(INVALID_REFRESH_TOKEN);
+        }
+    }
+
+    public void revokeToken(Token token) {
         token.setIsExpired(true);
         token.setIsRevoked(true);
         tokenRepository.save(token);
+    }
 
-        if (token.getExpirationDate().isBefore(Instant.now())) {
-            throw new BadRequestException(INVALID_REFRESH_TOKEN);
-        }
+    /**
+     * Generate a token
+     * @return token included 6 digits
+     */
+    private String generateToken() {
+        Random random = new Random();
+        int token = 100000 + random.nextInt(900000);
+        return String.valueOf(token);
     }
 }
