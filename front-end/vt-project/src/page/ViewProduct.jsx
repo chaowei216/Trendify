@@ -40,10 +40,6 @@ const ViewProduct = () => {
             };
 
 
-            Object.keys(requestBody).forEach(
-                (key) =>
-                    requestBody[key] === undefined && delete requestBody[key]
-            );
 
             console.log("Request Body:", JSON.stringify(requestBody, null, 2));
             const { data } = await viewProducts(requestBody);

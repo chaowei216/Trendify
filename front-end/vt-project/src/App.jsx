@@ -40,6 +40,30 @@ function App() {
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/product" element={<ViewProduct />} />
             <Route path="/login" element={<Login />} />
+            {/* <Route
+              path="/product"
+              element={
+                <ProtectedRoute allowedRoles={['Admin', 'Staff', 'Customer']}>
+                  <ViewProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={['Admin']}>
+                  <ViewProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute allowedRoles={['Staff']}>
+                  <StaffDashboard />
+                </ProtectedRoute>
+              }
+            /> */}
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

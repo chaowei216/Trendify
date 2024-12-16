@@ -6,7 +6,7 @@ spring:
       max-file-size: 50MB
       max-request-size: 100MB
   datasource:
-    url: jdbc:mysql://172.0.1.85:3336/trendify
+    url: jdbc:mysql://192.168.1.216:3336/trendify
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -48,8 +48,8 @@ springdoc:
 # minio
 integration:
   minio:
-    access-key: OoeaO2H333E0EzGqayz4
-    secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
+    access-key: admin
+    secret-key: admin123
     url: http://localhost:9000
   vnpay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
