@@ -46,7 +46,6 @@ public class DomainUserDetailsService implements UserDetailsService {
     }
 
     private User createSpringSecurityUser(Account account) {
-
         return new User(account.getEmail(), account.getPassword(), List.of(new SimpleGrantedAuthority(account.getRole().getRoleName().name())));
     }
 }

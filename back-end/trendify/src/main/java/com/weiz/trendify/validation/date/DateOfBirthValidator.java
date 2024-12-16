@@ -19,6 +19,6 @@ public class DateOfBirthValidator implements ConstraintValidator<ValidBirth, Ins
             return false;
         }
 
-        return value.isBefore(Instant.now().plusSeconds(3600 * 24 * 365 * 13));
+        return value.isBefore(Instant.now().minusSeconds(3600 * 24 * 365 * 13));
     }
 }
