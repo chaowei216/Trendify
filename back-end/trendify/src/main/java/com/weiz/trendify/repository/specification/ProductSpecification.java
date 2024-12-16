@@ -37,7 +37,7 @@ public final class ProductSpecification {
     }
 
     public ProductSpecification withName(final String name) {
-        System.out.println("here");
+
         if (!ObjectUtils.isEmpty(name)) {
             specifications.add(
                     (root, query, criteriaBuilder) ->

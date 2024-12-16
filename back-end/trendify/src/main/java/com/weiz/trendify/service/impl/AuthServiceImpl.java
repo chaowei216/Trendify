@@ -44,21 +44,38 @@ public class AuthServiceImpl implements AuthService {
     EmailService emailService;
 
     @Override
+    @Transactional
     public LoginResponse login(LoginRequest request) {
         final var authenticationToken = new UsernamePasswordAuthenticationToken(
                 request.email(),
                 request.password()
         );
+
         final var authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new LoginResponse(
-                tokenProvider.generateToken(authentication),
-                tokenProvider.generateRefreshToken(
-                        accountRepository.findByEmail(request.email())
-                                .orElseThrow(EntityNotFoundException::new)
-                ).getToken()
-        );
+        final var user = accountRepository.findByEmail(request.email())
+                .orElse(null);
+
+        // check status
+        if (user != null) {
+            switch (user.getStatus()) {
+
+                case ACTIVE:
+                    return new LoginResponse(
+                            tokenProvider.generateToken(authentication),
+                            tokenProvider.generateRefreshToken(user).getToken()
+                    );
+                case NOT_VERIFIED:
+                    throw new BadRequestException("User is not verified");
+                case BAN:
+                    throw new BadRequestException("User is banned");
+                default:
+                    break;
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -68,6 +85,11 @@ public class AuthServiceImpl implements AuthService {
         // check email
         if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BadRequestException("Email has already existed");
+        }
+
+        // check username
+        if (accountRepository.findByUserName(request.getUserName()).isPresent()) {
+            throw new BadRequestException("Username has already existed");
         }
 
         // check phone number
