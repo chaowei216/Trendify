@@ -37,6 +37,8 @@ public class TokenProvider {
 
     static String INVALID_REFRESH_TOKEN = "Invalid refresh token";
 
+    static String INVALID_VERIFY_TOKEN = "Invalid verify token";
+
     SecretKey key;
 
     JwtParser jwtParser;
@@ -147,7 +149,7 @@ public class TokenProvider {
         final var existingTokens = account.getTokens()
                 .stream()
                 .filter(t -> !t.getIsExpired() && !t.getIsRevoked() && t.getExpirationDate().isAfter(Instant.now())
-                                && t.getTokenType() == TokenTypeEnum.VERIFY_CODE).collect(Collectors.toSet());
+                        && t.getTokenType() == TokenTypeEnum.VERIFY_CODE).collect(Collectors.toSet());
 
         // revoke token
         existingTokens.forEach(this::revokeToken);
@@ -174,18 +176,22 @@ public class TokenProvider {
     public void validateVerifyToken(String token) {
         final var dbToken = getVerifyToken(token);
 
+
         if (dbToken == null) {
-            throw new NotFoundException(INVALID_JWT_TOKEN);
+            throw new NotFoundException(INVALID_VERIFY_TOKEN);
         }
 
-        if (dbToken.getIsExpired() || dbToken.getIsRevoked())
-            throw new BadRequestException(INVALID_REFRESH_TOKEN);
+        if (dbToken.getIsExpired() || dbToken.getIsRevoked()) {
+            revokeToken(dbToken);
+            throw new BadRequestException(INVALID_VERIFY_TOKEN);
+        }
 
         if (dbToken.getExpirationDate().isBefore(Instant.now())) {
-            // revoke if it has any problems
             revokeToken(dbToken);
-            throw new BadRequestException(INVALID_REFRESH_TOKEN);
+            throw new BadRequestException(INVALID_VERIFY_TOKEN);
         }
+
+        revokeToken(dbToken);
     }
 
     public void revokeToken(Token token) {
@@ -196,6 +202,7 @@ public class TokenProvider {
 
     /**
      * Generate a token
+     *
      * @return token included 6 digits
      */
     private String generateToken() {

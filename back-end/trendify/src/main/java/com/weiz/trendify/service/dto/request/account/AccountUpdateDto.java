@@ -1,11 +1,8 @@
 package com.weiz.trendify.service.dto.request.account;
 
-import com.weiz.trendify.entity.enums.UserStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
 
 @Data
 @Builder

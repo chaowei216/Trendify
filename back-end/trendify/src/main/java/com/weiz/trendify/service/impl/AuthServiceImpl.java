@@ -87,6 +87,11 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Email has already existed");
         }
 
+        // check username
+        if (accountRepository.findByUserName(request.getUserName()).isPresent()) {
+            throw new BadRequestException("Username has already existed");
+        }
+
         // check phone number
         if (accountRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
             throw new BadRequestException("Phone number has already existed");

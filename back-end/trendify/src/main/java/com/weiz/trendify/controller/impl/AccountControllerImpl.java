@@ -6,19 +6,17 @@ import com.weiz.trendify.service.AccountService;
 import com.weiz.trendify.service.dto.request.PagingRequest;
 import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
+import com.weiz.trendify.service.dto.request.account.StaffAccountRequest;
 import com.weiz.trendify.service.dto.response.PageableData;
 import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.account.AccountDto;
-import com.weiz.trendify.service.dto.response.product.ProductDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -61,5 +59,18 @@ public class AccountControllerImpl implements AccountController {
         }
 
         return Response.ok(accountService.updateAccountInfo(accountDto));
+    }
+
+    @Override
+    public Response<AccountDto> createStaffAccount(StaffAccountRequest accountDto) {
+        log.info("Account Controller: Create staff account request...");
+        return Response.created(accountService.createStaffAccount(accountDto));
+    }
+
+    @Override
+    public Response<Void> banAccount(long id) {
+        log.info("Account Controller: Ban account request...");
+        accountService.banAccount(id);
+        return Response.noContent();
     }
 }

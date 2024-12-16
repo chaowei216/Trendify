@@ -2,6 +2,7 @@ package com.weiz.trendify.controller;
 
 import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
+import com.weiz.trendify.service.dto.request.account.StaffAccountRequest;
 import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.account.AccountDto;
@@ -39,4 +40,16 @@ public interface AccountController {
     @PatchMapping("/{id}")
     Response<AccountDto> updateAccount(@NotNull @PathVariable(name = "id") final long id,
                                        @Valid @RequestBody final AccountUpdateDto accountDto);
+
+    @Operation(summary = "Create staff account")
+    @Secured("ROLE_ADMIN")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/staff")
+    Response<AccountDto> createStaffAccount(@Valid @RequestBody final StaffAccountRequest accountDto);
+
+    @Operation(summary = "Ban account")
+    @Secured("ROLE_ADMIN")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    Response<Void> banAccount(@PathVariable(name = "id") final long id);
 }
