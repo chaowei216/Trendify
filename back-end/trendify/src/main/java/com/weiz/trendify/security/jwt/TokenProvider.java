@@ -11,10 +11,8 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,6 +77,17 @@ public class TokenProvider {
 
     public Token generateRefreshToken(Account account) {
 
+        // revoke existing token
+        final var tokens = tokenRepository.findByAccount(account);
+
+        if (!tokens.isEmpty()) {
+            tokens.forEach(this::revokeToken);
+
+            // save all changes
+            tokenRepository.saveAll(tokens);
+        }
+
+        // generate token
         Token token = Token.builder()
                 .account(account)
                 .token(UUID.randomUUID().toString())
@@ -88,6 +97,7 @@ public class TokenProvider {
                 .tokenType(TokenTypeEnum.REFRESH_TOKEN)
                 .build();
 
+        // save to db
         tokenRepository.save(token);
 
         return token;

@@ -1,6 +1,7 @@
-package com.weiz.trendify.service.dto.response.account;
+package com.weiz.trendify.service.dto.request.account;
 
 import com.weiz.trendify.entity.enums.UserStatus;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,21 +12,17 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountDto {
+public class AccountUpdateDto {
 
+    @NotNull
     Long id;
 
+    @NotNull
     String fullName;
 
-    String userName;
-
-    Instant dateOfBirth;
-
-    String email;
-
+    @NotNull
     String phoneNumber;
 
+    @NotNull
     String address;
-
-    UserStatus status;
 }
