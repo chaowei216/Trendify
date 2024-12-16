@@ -4,6 +4,7 @@ import com.weiz.trendify.entity.Account;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.AccountRepository;
 import com.weiz.trendify.service.AccountService;
+import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
 import com.weiz.trendify.service.dto.response.account.AccountDto;
 import com.weiz.trendify.service.mapper.account.AccountMapper;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -59,7 +61,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountDto> getAccounts() {
-        return List.of();
+    public Page<AccountDto> getAccounts(@NotNull AccountSearchRequest request) {
+        log.info("Account Service [GET ALL]: get all accounts processing...");
+
+        // get all accounts
+        return accountRepository.findAll(request.specification(), request.getPaging().pageable())
+                .map(accountMapper::toDto);
     }
 }

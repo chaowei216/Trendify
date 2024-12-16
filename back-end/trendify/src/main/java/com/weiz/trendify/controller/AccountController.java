@@ -1,6 +1,8 @@
 package com.weiz.trendify.controller;
 
+import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
+import com.weiz.trendify.service.dto.response.PagingResponse;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.account.AccountDto;
 import com.weiz.trendify.service.dto.response.category.CategoryDto;
@@ -22,11 +24,11 @@ public interface AccountController {
     @Operation(summary = "Get all accounts")
     @Secured("ROLE_ADMIN")
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping
-    Response<List<AccountDto>> getAccounts();
+    @PostMapping("/search")
+    Response<PagingResponse<AccountDto>> getAccounts(@RequestBody final AccountSearchRequest request);
 
     @Operation(summary = "Get account")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER', 'ROLE_STAFF')")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     Response<AccountDto> getAccount(@NotNull @PathVariable(name = "id") final long id);

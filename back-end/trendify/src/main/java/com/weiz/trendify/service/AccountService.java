@@ -1,8 +1,10 @@
 package com.weiz.trendify.service;
 
 import com.weiz.trendify.entity.Account;
+import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
 import com.weiz.trendify.service.dto.response.account.AccountDto;
+import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
@@ -15,5 +17,5 @@ public interface AccountService {
 
     AccountDto updateAccountInfo(@NonNull final AccountUpdateDto accountDto);
 
-    List<AccountDto> getAccounts();
+    Page<AccountDto> getAccounts(@NonNull AccountSearchRequest request);
 }
