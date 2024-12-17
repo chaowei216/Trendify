@@ -9,4 +9,6 @@ public interface EmailService {
     void sendConfirmOrderEmail(@NonNull Order order);
 
     void sendTokenVerificationEmail(@NonNull Account account, @NonNull String token);
+
+    void sendTokenForgotPassword(@NonNull Account account, @NonNull String token);
 }

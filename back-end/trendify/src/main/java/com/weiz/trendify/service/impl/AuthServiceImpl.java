@@ -3,6 +3,7 @@ package com.weiz.trendify.service.impl;
 import com.weiz.trendify.entity.Account;
 import com.weiz.trendify.entity.Token;
 import com.weiz.trendify.entity.enums.ERole;
+import com.weiz.trendify.entity.enums.TokenTypeEnum;
 import com.weiz.trendify.entity.enums.UserStatus;
 import com.weiz.trendify.exception.BadRequestException;
 import com.weiz.trendify.exception.NotFoundException;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -137,6 +139,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void sendVerifyEmail(@NotNull VerifyEmailRequest request) {
 
         // get user by email
@@ -155,6 +158,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void confirmEmail(@NotNull ConfirmEmailRequest request) {
 
         // get user by email
@@ -167,10 +171,90 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // check token
-        tokenProvider.validateVerifyToken(request.token());
+        tokenProvider.validateDbToken(request.token());
 
         // update status
         user.setStatus(UserStatus.ACTIVE);
         accountRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void sendForgotPasswordCode(@NotNull ForgotPasswordRequest request) {
+
+        // get user by email
+        final var user = accountRepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // check status
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BadRequestException("Account has not been available!");
+        }
+
+        // generate random token 6-digits
+        final var token = tokenProvider.generateForgotPasswordCode(user);
+
+        emailService.sendTokenForgotPassword(user, token.getToken());
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(@NotNull ResetPasswordRequest request) {
+
+        // get user by email
+        final var user = accountRepository.findByEmail(request.email())
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // check token
+        tokenProvider.validateDbToken(request.token());
+
+        // update password
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        accountRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(@NotNull ChangePasswordRecord record) {
+
+        // get account by id
+        final var account = accountRepository.findById(record.accountId())
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // check account status
+        if (account.getStatus() != UserStatus.ACTIVE) {
+            throw new BadRequestException("Account has not been available!");
+        }
+
+        // check cur password
+        if (!passwordEncoder.matches(record.oldPassword(), account.getPassword())) {
+            throw new BadRequestException("Old password is incorrect");
+        }
+
+        // check if cur password is matched with new password
+        if (passwordEncoder.matches(record.newPassword(), account.getPassword())) {
+            throw new BadRequestException("New password is matched with old password");
+        }
+
+        // update password
+        account.setPassword(passwordEncoder.encode(record.newPassword()));
+        accountRepository.save(account);
+    }
+
+    @Override
+    @Transactional
+    public void logout(@NotNull Long id) {
+
+        // get account by id
+        final var account = accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found"));
+
+        // revoke refresh token
+        account.getTokens().stream()
+                .filter(token -> token.getTokenType()
+                        .equals(TokenTypeEnum.REFRESH_TOKEN) &&
+                        !token.getIsExpired() && !token.getIsRevoked())
+                .findFirst()
+                .ifPresent(tokenProvider::revokeToken);
     }
 }

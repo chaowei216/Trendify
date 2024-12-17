@@ -53,7 +53,7 @@ integration:
     url: http://localhost:9000
   vnpay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    returnUrl: http://localhost:5172
+    returnUrl: http://localhost:5173
     tmnCode: 0QZQV8BP
     secretKey: JJSTFUGWAP8WBD9JM0MQTLJFP7XA66JI
     version: 2.1.0
@@ -65,4 +65,4 @@ jwt:
   expiration: 10000
   refreshDuration: 10000
   issuer: localhost:8080
-  audience: localhost:5172
+  audience: localhost:5173
