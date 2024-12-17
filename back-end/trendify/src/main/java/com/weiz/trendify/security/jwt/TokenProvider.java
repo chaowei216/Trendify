@@ -37,7 +37,7 @@ public class TokenProvider {
 
     static String INVALID_REFRESH_TOKEN = "Invalid refresh token";
 
-    static String INVALID_VERIFY_TOKEN = "Invalid verify token";
+    static String INVALID_TOKEN = "Invalid token";
 
     SecretKey key;
 
@@ -145,6 +145,11 @@ public class TokenProvider {
         }
     }
 
+    /**
+     * generate verify token
+     * @param account account need verify email
+     * @return token 6-digit
+     */
     public Token generateVerifyToken(Account account) {
         final var existingTokens = account.getTokens()
                 .stream()
@@ -169,26 +174,55 @@ public class TokenProvider {
         return dbToken;
     }
 
+    /**
+     * generate forgot pass token
+     * @param account account need send reset pass token
+     * @return token 6-digit
+     */
+    public Token generateForgotPasswordCode(Account account) {
+        final var existingTokens = account.getTokens()
+                .stream()
+                .filter(t -> !t.getIsExpired() && !t.getIsRevoked() && t.getExpirationDate().isAfter(Instant.now())
+                        && t.getTokenType() == TokenTypeEnum.FORGOT_PASSWORD).collect(Collectors.toSet());
+
+        // revoke token
+        existingTokens.forEach(this::revokeToken);
+
+        final var token = generateToken();
+
+        Token dbToken = Token.builder()
+                .account(account)
+                .tokenType(TokenTypeEnum.FORGOT_PASSWORD)
+                .token(token)
+                .isExpired(false)
+                .isRevoked(false)
+                .expirationDate(Instant.now().plusMillis(1000 * 60 * 15))
+                .build();
+
+        tokenRepository.save(dbToken);
+        return dbToken;
+    }
+
     public Token getVerifyToken(String token) {
         return tokenRepository.findByToken(token).orElse(null);
     }
 
-    public void validateVerifyToken(String token) {
+    public void validateDbToken(String token) {
         final var dbToken = getVerifyToken(token);
 
 
         if (dbToken == null) {
-            throw new NotFoundException(INVALID_VERIFY_TOKEN);
+            throw new NotFoundException(INVALID_TOKEN);
         }
 
         if (dbToken.getIsExpired() || dbToken.getIsRevoked()) {
             revokeToken(dbToken);
-            throw new BadRequestException(INVALID_VERIFY_TOKEN);
+            throw new BadRequestException(INVALID_TOKEN);
         }
 
         if (dbToken.getExpirationDate().isBefore(Instant.now())) {
             revokeToken(dbToken);
-            throw new BadRequestException(INVALID_VERIFY_TOKEN);
+            throw new BadRequestException(INVALID_TOKEN);
         }
 
         revokeToken(dbToken);

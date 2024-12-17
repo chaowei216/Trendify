@@ -26,6 +26,8 @@ public class EmailServiceImpl implements EmailService {
 
     static String EMAIL_SEND = "luutrieuvi2003@gmail.com";
     static String ORDER_CONFIRM_SUBJECT = "Order Confirm";
+    static String VERIFY_EMAIL_SUBJECT = "Verify Email";
+    static String FORGET_PASSWORD_SUBJECT = "Forgot Password";
 
     JavaMailSender mailSender;
     SpringTemplateEngine templateEngine;
@@ -74,7 +76,34 @@ public class EmailServiceImpl implements EmailService {
             // send email
             helper.setTo(account.getEmail());
             helper.setText(html, true);
-            helper.setSubject(ORDER_CONFIRM_SUBJECT);
+            helper.setSubject(VERIFY_EMAIL_SUBJECT);
+            helper.setFrom(EMAIL_SEND);
+            mailSender.send(mimeMessage);
+
+            log.info("END... Sending email successfully");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void sendTokenForgotPassword(@NotNull Account account, @NotNull String token) {
+        try {
+            log.info("Sending email to {}", account.getEmail());
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, StandardCharsets.UTF_8.name());
+
+            // load template email with content
+            Context context = new Context();
+            context.setVariable("fullName", account.getFullName());
+            context.setVariable("token", token);
+            String html = templateEngine.process("forgot-password", context);
+
+            // send email
+            helper.setTo(account.getEmail());
+            helper.setText(html, true);
+            helper.setSubject(FORGET_PASSWORD_SUBJECT);
             helper.setFrom(EMAIL_SEND);
             mailSender.send(mimeMessage);
 

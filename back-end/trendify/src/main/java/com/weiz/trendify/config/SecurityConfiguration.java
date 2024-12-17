@@ -1,6 +1,5 @@
 package com.weiz.trendify.config;
 
-import com.weiz.trendify.config.filter.AuthenticationFilter;
 import com.weiz.trendify.security.SecurityProblemSupport;
 import com.weiz.trendify.security.jwt.JwtConfigurer;
 import lombok.AccessLevel;
