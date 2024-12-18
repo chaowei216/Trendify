@@ -14,7 +14,7 @@ public interface AccountService {
 
     Account getAccount(@NonNull final Long id);
 
-    AccountDto getAccountById(@NonNull final Long id);
+    AccountDto getByEmail(@NonNull final String email);
 
     AccountDto updateAccountInfo(@NonNull final AccountUpdateDto accountDto);
 
