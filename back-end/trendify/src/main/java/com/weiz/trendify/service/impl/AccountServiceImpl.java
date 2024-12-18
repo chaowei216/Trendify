@@ -49,13 +49,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDto getAccountById(@NotNull Long id) {
-        log.info("Account Service [GET]: Get account by id processing...");
+    public AccountDto getByEmail(@NotNull String email) {
+        log.info("Account Service [GET]: Get account by email processing...");
 
-        final var account = accountRepository.findById(id)
+        return accountRepository.findByEmail(email)
+                .map(accountMapper::toDto)
                 .orElseThrow(() -> new NotFoundException("Not Found"));
-
-        return accountMapper.toDto(account);
     }
 
     @Override
