@@ -2,9 +2,7 @@ package com.weiz.trendify.controller.impl;
 
 import com.weiz.trendify.controller.AuthController;
 import com.weiz.trendify.service.AuthService;
-import com.weiz.trendify.service.dto.request.auth.LoginRequest;
-import com.weiz.trendify.service.dto.request.auth.RegisterRequest;
-import com.weiz.trendify.service.dto.request.auth.TokenRequest;
+import com.weiz.trendify.service.dto.request.auth.*;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.auth.LoginResponse;
 import com.weiz.trendify.service.dto.response.auth.RegisterResponse;
@@ -41,5 +39,41 @@ public class AuthControllerImpl implements AuthController {
         return Response.created(
                 authService.refreshToken(request)
         );
+    }
+
+    @Override
+    public Response<Void> verifyEmail(VerifyEmailRequest request) {
+        authService.sendVerifyEmail(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> confirmEmail(ConfirmEmailRequest request) {
+        authService.confirmEmail(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> forgotPassword(ForgotPasswordRequest request) {
+        authService.sendForgotPasswordCode(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> resetPassword(ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> changePassword(ChangePasswordRecord request) {
+        authService.changePassword(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> logout(Long id) {
+        authService.logout(id);
+        return Response.noContent();
     }
 }

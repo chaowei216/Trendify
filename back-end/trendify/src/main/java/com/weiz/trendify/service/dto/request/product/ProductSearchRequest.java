@@ -26,7 +26,6 @@ public class ProductSearchRequest extends FilterRequest<Product> {
                 .withName(name)
                 .withCategory(categoryId)
                 .withPrice(fromPrice, toPrice)
-                .withVariantQuantity()
                 .build();
     }
 }

@@ -1,6 +1,5 @@
 package com.weiz.trendify.config;
 
-import com.weiz.trendify.config.filter.AuthenticationFilter;
 import com.weiz.trendify.security.SecurityProblemSupport;
 import com.weiz.trendify.security.jwt.JwtConfigurer;
 import lombok.AccessLevel;
@@ -8,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +37,9 @@ public class SecurityConfiguration {
     public static final List<String> PUBLIC_APIS = List.of(
             "/api/v1/auth/login",
             "/api/v1/auth/register",
+            "/api/v1/auth/forgot-password",
+            "/api/v1/auth/verify-email",
+            "/api/v1/auth/confirm-email",
             "/v3/api-docs/**",
             "/swagger-ui/index.html",
             "/swagger-ui/**",
@@ -63,7 +66,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(

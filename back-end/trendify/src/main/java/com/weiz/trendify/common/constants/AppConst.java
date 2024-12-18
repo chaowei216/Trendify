@@ -12,4 +12,7 @@ public final class AppConst {
     public static final MessageCode BAD_REQUEST = new MessageCode("400", "Bad Request");
     public static final MessageCode NOT_FOUND = new MessageCode("404", "Not Found");
 
+    // default setting
+    public static final String DEFAULT_PASSWORD = "123456";
+
 }

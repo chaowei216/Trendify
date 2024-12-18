@@ -2,6 +2,7 @@ package com.weiz.trendify.service.impl;
 
 import com.weiz.trendify.entity.Order;
 import com.weiz.trendify.entity.enums.OrderStatus;
+import com.weiz.trendify.exception.BusinessException;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.service.*;
 import com.weiz.trendify.service.dto.request.order.OrderCreateDto;
@@ -9,6 +10,7 @@ import com.weiz.trendify.service.dto.request.order.OrderUpdateDto;
 import com.weiz.trendify.service.dto.request.payment.ResultStatusDto;
 import com.weiz.trendify.service.dto.request.product.ProductVariantUpdateDto;
 import com.weiz.trendify.service.dto.response.payment.PaymentUrlResponse;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
     OrderService orderService;
     VnPayService vnPayService;
     ProductVariantService productVariantService;
+    EmailService emailService;
 
     @Override
     public PaymentUrlResponse createPaymentUrl(@NotNull OrderCreateDto dto) {
@@ -41,6 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public void handlePaymentResponse(@NotNull ResultStatusDto response) {
         log.info("Payment Service [UPDATE]: handle payment response processing...");
 
@@ -71,6 +75,13 @@ public class PaymentServiceImpl implements PaymentService {
                         .quantity(remainAmount)
                         .build());
             });
+
+            // sending email
+            try {
+                emailService.sendConfirmOrderEmail(order);
+            } catch (Exception ex) {
+                throw new BusinessException("Some thing went wrong when sending email");
+            }
         } else {
             // case FAIL - update status to CANCELLED
             orderService.updateOrder(OrderUpdateDto.builder()

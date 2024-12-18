@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -74,7 +75,9 @@ public class MinioChannel {
     @SneakyThrows
     public String upload(final MultipartFile file) {
         log.info("Bucket: {}, file size: {}", BUCKET_NAME, file.getSize());
-        final var fileName = file.getOriginalFilename();
+
+        // generate random file name
+        final var fileName = UUID.randomUUID().toString();
 
         try {
             minioClient.putObject(
