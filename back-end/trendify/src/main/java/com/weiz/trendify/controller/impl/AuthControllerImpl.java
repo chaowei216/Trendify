@@ -52,4 +52,28 @@ public class AuthControllerImpl implements AuthController {
         authService.confirmEmail(request);
         return Response.noContent();
     }
+
+    @Override
+    public Response<Void> forgotPassword(ForgotPasswordRequest request) {
+        authService.sendForgotPasswordCode(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> resetPassword(ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> changePassword(ChangePasswordRecord request) {
+        authService.changePassword(request);
+        return Response.noContent();
+    }
+
+    @Override
+    public Response<Void> logout(Long id) {
+        authService.logout(id);
+        return Response.noContent();
+    }
 }
