@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderCreateDto {
 
     @NotNull
-    Long userId;
+    String email;
 
     List<OrderCreateItemDto> items = new ArrayList<>();
 

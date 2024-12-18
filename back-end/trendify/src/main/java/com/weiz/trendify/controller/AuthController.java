@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/auth")
@@ -54,11 +55,13 @@ public interface AuthController {
     Response<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request);
 
     @Operation(summary = "Change password")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/change-password")
     Response<Void> changePassword(@Valid @RequestBody ChangePasswordRecord request);
 
     @Operation(summary = "Logout")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/logout/{id}")
     Response<Void> logout(@NotNull @PathVariable(name = "id") Long id);

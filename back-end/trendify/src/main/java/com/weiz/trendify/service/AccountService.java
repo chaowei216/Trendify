@@ -23,4 +23,6 @@ public interface AccountService {
     AccountDto createStaffAccount(@NonNull final StaffAccountRequest request);
 
     void banAccount(@NonNull final Long id);
+
+    Account getAccountByEmail(@NonNull final String email);
 }

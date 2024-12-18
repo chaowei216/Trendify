@@ -32,7 +32,7 @@ public interface AccountController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    Response<AccountDto> getAccount(@NotNull @PathVariable(name = "id") final long id);
+    Response<AccountDto> getAccount(@NotNull @PathVariable(name = "id") final Long id);
 
     @Operation(summary = "Update account")
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_STAFF')")

@@ -130,6 +130,14 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public Account getAccountByEmail(@NotNull String email) {
+        log.info("Account Service [GET]: Get account by email processing...");
+
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Not Found"));
+    }
+
     /**
      * Check if user is existed in system
      * @param username username of account
