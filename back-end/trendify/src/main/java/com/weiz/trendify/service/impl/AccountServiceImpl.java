@@ -131,13 +131,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDto getAccountByEmail(@NotNull String email) {
+    public Account getAccountByEmail(@NotNull String email) {
         log.info("Account Service [GET]: Get account by email processing...");
 
-        final var account = accountRepository.findByEmail(email)
+        return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Not Found"));
-
-        return accountMapper.toDto(account);
     }
 
     /**

@@ -24,5 +24,5 @@ public interface AccountService {
 
     void banAccount(@NonNull final Long id);
 
-    AccountDto getAccountByEmail(@NonNull final String email);
+    Account getAccountByEmail(@NonNull final String email);
 }
