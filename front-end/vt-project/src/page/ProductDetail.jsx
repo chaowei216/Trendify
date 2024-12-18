@@ -1,221 +1,221 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useParams } from 'react-router-dom';
-import product1 from '../assets/2.png';
 import { getProductDetail } from '../utils/api';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { auth } from "../utils/api";
 
 const ProductDetail = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
     const [quantity, setQuantity] = useState(1);
-    const [productData, setProductData] = useState(null);
+    const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [mainImage, setMainImage] = useState('');
     const [availableQuantity, setAvailableQuantity] = useState(0);
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                setLoading(true);
+                if (!auth.validateAccess()) {
+                    navigate('/login');
+                    return;
+                }
                 const response = await getProductDetail(id);
-                if (response.status.code === 200) {
-                    setProductData(response.data);
+                if (response.data) {
+                    setProduct(response.data);
+                    setMainImage(response.data.defaultImage);
                 }
             } catch (error) {
                 console.error('Error fetching product:', error);
+                toast.error('Không thể tải thông tin sản phẩm');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchProduct();
-    }, [id]);
+    }, [id, navigate]);
 
     useEffect(() => {
-        if (productData && selectedSize && selectedColor) {
-            const variant = productData.variants.find(
+        if (product && selectedSize && selectedColor) {
+            const variant = product.variants?.find(
                 v => v.size === selectedSize && v.color === selectedColor
             );
-            setAvailableQuantity(variant ? variant.quantity : 0);
+            setAvailableQuantity(variant?.quantity || 0);
             setQuantity(1);
         }
-    }, [selectedSize, selectedColor, productData]);
+    }, [selectedSize, selectedColor, product]);
 
-    const handleQuantityChange = (action) => {
-        if (action === 'increase' && quantity < availableQuantity) {
-            setQuantity(prev => prev + 1);
-        } else if (action === 'decrease' && quantity > 1) {
-            setQuantity(prev => prev - 1);
-        }
-    };
-
-    const addToCart = () => {
+    const handleAddToCart = () => {
         if (!selectedSize || !selectedColor) {
-            toast.warning('Vui lòng chọn size và màu sắc!');
+            toast.warning('Vui lòng chọn size và màu sắc');
             return;
         }
 
-        const existingCart = JSON.parse(Cookies.get('cart') || '[]');
+        const cartItem = {
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            image: mainImage,
+            size: selectedSize,
+            color: selectedColor,
+            quantity: quantity,
+            totalPrice: product.price * quantity
+        };
 
-        const existingProductIndex = existingCart.findIndex(item =>
-            item.id === productData.id &&
-            item.size === selectedSize &&
-            item.color === selectedColor
+        const currentCart = JSON.parse(Cookies.get('cart') || '[]');
+        const existingItemIndex = currentCart.findIndex(
+            item => item.productId === product.id &&
+                item.size === selectedSize &&
+                item.color === selectedColor
         );
 
-        if (existingProductIndex !== -1) {
-            const updatedCart = [...existingCart];
-            updatedCart[existingProductIndex].quantity += quantity;
-            updatedCart[existingProductIndex].totalPrice =
-                updatedCart[existingProductIndex].quantity * productData.price;
-
-            Cookies.set('cart', JSON.stringify(updatedCart), { expires: 7 });
-            toast.success('Đã cập nhật số lượng trong giỏ hàng!');
+        if (existingItemIndex > -1) {
+            currentCart[existingItemIndex].quantity += quantity;
+            currentCart[existingItemIndex].totalPrice =
+                currentCart[existingItemIndex].quantity * product.price;
         } else {
-            const newItem = {
-                id: productData.id,
-                name: productData.name,
-                price: productData.price,
-                image: productData.image || product1,
-                size: selectedSize,
-                color: selectedColor,
-                quantity: quantity,
-                totalPrice: productData.price * quantity
-            };
-
-            const updatedCart = [...existingCart, newItem];
-            Cookies.set('cart', JSON.stringify(updatedCart), { expires: 7 });
-            toast.success('Đã thêm vào giỏ hàng!');
+            currentCart.push(cartItem);
         }
+
+        Cookies.set('cart', JSON.stringify(currentCart), { expires: 7 });
+        toast.success('Đã thêm vào giỏ hàng');
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            </div>
+        );
     }
 
-    if (!productData) {
-        return <div>Product not found</div>;
+    if (!product) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-xl">Không tìm thấy sản phẩm</div>
+            </div>
+        );
     }
 
     return (
-        <div className="max-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50">
             <Navbar />
-            <div className="max-w-full mx-auto px-4 py-12">
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                        {/* Product Images */}
-                        <div className="space-y-6">
-                            <div className="aspect-w-1 aspect-h-1 bg-white rounded-xl overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 py-8">
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="grid md:grid-cols-2 gap-8 p-6">
+                        {/* Left: Image Section */}
+                        <div className="space-y-4">
+                            <div className="aspect-w-1 aspect-h-1">
                                 <img
-                                    src={productData.image || product1}
-                                    alt={productData.name}
-                                    className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
+                                    src={mainImage}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover rounded-lg"
                                 />
+                            </div>
+                            <div className="grid grid-cols-4 gap-2">
+                                {product.images?.map((img, index) => (
+                                    <img
+                                        key={index}
+                                        src={img}
+                                        alt={`${product.name} view ${index + 1}`}
+                                        className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-75 transition"
+                                        onClick={() => setMainImage(img)}
+                                    />
+                                ))}
                             </div>
                         </div>
 
-                        {/* Product Info */}
+                        {/* Right: Product Details */}
                         <div className="space-y-6">
                             <div>
-                                <h1 className="text-lg font-sans text-gray-900 mb-2 mt-10">{productData.name}</h1>
-                                <p className="text-lg font-sans text-red-600">
-                                    {productData.price?.toLocaleString()}đ
+                                <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
+                                <p className="text-2xl font-semibold text-red-600 mt-2">
+                                    {product.price?.toLocaleString()}đ
                                 </p>
                             </div>
 
-                            {/* Sizes */}
-                            {productData.variants && (
-                                <div>
-                                    <h3 className="text-lg font-sans text-gray-900 mb-3">Kích thước</h3>
-                                    <div className="flex gap-3">
-                                        {[...new Set(productData.variants.map(v => v.size))].map((size, index) => (
-                                            <button
-                                                key={`size-${index}-${size}`}
-                                                onClick={() => setSelectedSize(size)}
-                                                className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 
-                                                    ${selectedSize === size
-                                                        ? 'bg-black text-white'
-                                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}`}
-                                            >
-                                                {size}
-                                            </button>
-                                        ))}
-                                    </div>
+                            {/* Size Selection */}
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-medium text-gray-900">Kích thước</h3>
+                                <div className="flex gap-2">
+                                    {product.variants && [...new Set(product.variants.map(v => v.size))].map((size) => (
+                                        <button
+                                            key={size}
+                                            onClick={() => setSelectedSize(size)}
+                                            className={`px-4 py-2 rounded ${selectedSize === size
+                                                    ? 'bg-black text-white'
+                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
 
-                            {/* Colors */}
-                            {productData.variants && (
-                                <div>
-                                    <h3 className="text-lg font-sans text-gray-900 mb-3">Màu sắc</h3>
-                                    <div className="flex gap-3">
-                                        {[...new Set(productData.variants.map(v => v.color))].map((color, index) => (
-                                            <button
-                                                key={`color-${index}-${color}`}
-                                                onClick={() => setSelectedColor(color)}
-                                                className={`px-6 py-3 rounded-lg font-sans transition-all duration-200
-                                                    ${selectedColor === color
-                                                        ? 'bg-black text-white'
-                                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}`}
-                                            >
-                                                {color}
-                                            </button>
-                                        ))}
-                                    </div>
+                            {/* Color Selection */}
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-medium text-gray-900">Màu sắc</h3>
+                                <div className="flex gap-2">
+                                    {product.variants && [...new Set(product.variants.map(v => v.color))].map((color) => (
+                                        <button
+                                            key={color}
+                                            onClick={() => setSelectedColor(color)}
+                                            className={`px-4 py-2 rounded ${selectedColor === color
+                                                    ? 'bg-black text-white'
+                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                                }`}
+                                        >
+                                            {color}
+                                        </button>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
 
-                            {/* Quantity */}
-                            <div>
-                                <h3 className="text-lg font-sans text-gray-900 mb-3">Số lượng</h3>
-                                {selectedSize && selectedColor ? (
-                                    <h6 className="text-xs font-sans text-blue-900 mb-3">
-                                        Còn lại: {availableQuantity}
-                                    </h6>
-                                ) : (
-                                    <h6 className="text-xs font-sans text-blue-900 mb-3">
-                                        Vui lòng chọn size và màu sắc
-                                    </h6>
-                                )}
+                            {/* Quantity Selection */}
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-medium text-gray-900">Số lượng</h3>
                                 <div className="flex items-center gap-4">
                                     <button
-                                        onClick={() => handleQuantityChange('decrease')}
-                                        className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl font-sans hover:bg-gray-200 transition-colors"
-                                        disabled={!selectedSize || !selectedColor}
+                                        onClick={() => quantity > 1 && setQuantity(q => q - 1)}
+                                        className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
                                     >
                                         -
                                     </button>
-                                    <span className="text-xl font-sans w-12 text-center">{quantity}</span>
+                                    <span className="w-12 text-center">{quantity}</span>
                                     <button
-                                        onClick={() => handleQuantityChange('increase')}
-                                        className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl font-sans hover:bg-gray-200 transition-colors"
-                                        disabled={!selectedSize || !selectedColor}
+                                        onClick={() => quantity < availableQuantity && setQuantity(q => q + 1)}
+                                        className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"
                                     >
                                         +
                                     </button>
                                 </div>
+                                <p className="text-sm text-gray-500">
+                                    Còn lại: {availableQuantity} sản phẩm
+                                </p>
                             </div>
 
                             {/* Add to Cart Button */}
                             <button
-                                onClick={addToCart}
-                                className={`w-full py-4 rounded-xl font-sans text-lg transition-colors duration-200 transform hover:scale-[1.02]
-                                    ${selectedSize && selectedColor && availableQuantity > 0
-                                        ? 'bg-black text-white hover:bg-gray-900'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+                                onClick={handleAddToCart}
                                 disabled={!selectedSize || !selectedColor || availableQuantity === 0}
+                                className="w-full py-3 px-8 rounded-lg bg-black text-white hover:bg-gray-900 
+                                         disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                             >
                                 Thêm vào giỏ hàng
                             </button>
 
-                            {/* Description */}
-                            <div className="pt-8 border-t border-gray-200">
-                                <h3 className="text-lg font-sans text-gray-900 mb-3">Mô tả sản phẩm</h3>
-                                <p className="text-gray-600 leading-relaxed">
-                                    {productData.description}
+                            {/* Product Description */}
+                            <div className="border-t pt-6 mt-6">
+                                <h3 className="text-lg font-medium mb-4">Mô tả sản phẩm</h3>
+                                <p className="text-gray-600 whitespace-pre-line">
+                                    {product.description}
                                 </p>
                             </div>
                         </div>

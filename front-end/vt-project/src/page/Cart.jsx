@@ -25,7 +25,7 @@ const Cart = () => {
     const handleCheckout = async () => {
         try {
             const paymentData = {
-                userId: 1,
+                userId: 3,
                 items: cartItems.map(item => ({
                     variantId: item.id,
                     quantity: item.quantity,

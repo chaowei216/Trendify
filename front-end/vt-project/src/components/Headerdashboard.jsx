@@ -13,7 +13,7 @@ const HeaderDashboard = () => {
     useEffect(() => {
         const userData = decodeToken()
         if (userData) {
-            setUserImage(userData.avatar || ProfileTeacher)
+            setUserImage(userData.avatar)
         }
     }, [])
 
