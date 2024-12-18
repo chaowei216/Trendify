@@ -45,9 +45,9 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
-    public Response<AccountDto> getAccount(Long id) {
+    public Response<AccountDto> getAccount(String email) {
         log.info("Account Controller: Get account request...");
-        return Response.ok(accountService.getAccountById(id));
+        return Response.ok(accountService.getByEmail(email));
     }
 
     @Override
