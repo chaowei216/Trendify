@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Order Service [CREATE]: create order processing...");
 
         // check user if exists
-        var user = accountService.getAccount(orderDto.getUserId());
+        var user = accountService.getAccountByEmail(orderDto.getEmail());
 
         if (user == null) {
             throw new NotFoundException("User not found");
