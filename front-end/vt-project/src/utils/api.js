@@ -62,13 +62,24 @@ export const getProductDetail = async (id) => {
 
 export const createPayment = async (paymentData) => {
   try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
     const response = await fetch('http://localhost:8080/api/v1/payment', {
       method: 'POST',
-      headers: auth.getAuthHeaders(),
+      headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+      },
       body: JSON.stringify(paymentData)
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -78,7 +89,6 @@ export const createPayment = async (paymentData) => {
     throw error;
   }
 };
-
 export const handlePaymentResponse = async (responseData) => {
   try {
     const response = await fetch('http://localhost:8080/api/v1/payment/response', {
@@ -88,7 +98,7 @@ export const handlePaymentResponse = async (responseData) => {
         orderId: responseData.orderId,
         success: responseData.success
       }),
-      credentials: 'include'
+   
     });
 
     if (!response.ok) {
@@ -106,13 +116,12 @@ export const handlePaymentResponse = async (responseData) => {
 
 export const auth = {
   getAuthHeaders: () => {
-
     const token = localStorage.getItem('accessToken');
     
     if (!token) {
       throw new Error('No authentication token found');
     }
-    console.log(token);
+  
     return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'

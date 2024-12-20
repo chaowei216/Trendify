@@ -1,12 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from "react-router-dom";
+import { getProductDetail } from '../utils/api';
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookies from 'js-cookie';
+
 import { createPayment } from '../utils/api';
+import { auth } from "../utils/api"
+import { decodeToken } from '../utils/api';
+
+
 const Cart = () => {
+    const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                if (!auth.validateAccess()) {
+                    navigate('/login');
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                navigate('/login');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [navigate]);
 
     useEffect(() => {
         const loadCartItems = () => {
@@ -22,15 +49,37 @@ const Cart = () => {
         const total = items.reduce((sum, item) => sum + item.totalPrice, 0);
         setTotalAmount(total);
     };
+
     const handleCheckout = async () => {
         try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                alert('Vui lòng đăng nhập để tiếp tục.');
+                navigate('/login');
+                return;
+            }
+
+            const decodedToken = decodeToken(token);
+            const userEmail = decodedToken?.sub;
+
+
+            if (!userEmail) {
+                alert('Không thể xác định thông tin người dùng.');
+                navigate('/login');
+                return;
+            }
+
             const paymentData = {
-                userId: 3,
-                items: cartItems.map(item => ({
-                    variantId: item.id,
-                    quantity: item.quantity,
-                    totalPrice: item.totalPrice
-                })),
+                email: userEmail,
+                items: cartItems.map(item => {
+
+
+                    return {
+                        variantId: item.variantId,
+                        quantity: item.quantity,
+                        totalPrice: item.totalPrice
+                    };
+                }),
                 note: "string",
                 totalPrice: totalAmount,
                 paymentMethod: "vnpay"
@@ -39,10 +88,17 @@ const Cart = () => {
             const response = await createPayment(paymentData);
             if (response.data && response.data.paymentUrl) {
                 window.location.href = response.data.paymentUrl;
+            } else {
+                alert('Không thể tạo URL thanh toán.');
             }
         } catch (error) {
             console.error('Error during checkout:', error);
+            if (error.message === 'Unauthorized' || error.message === 'No authentication token found') {
+                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
 
+            } else {
+                alert('Có lỗi xảy ra trong quá trình thanh toán.');
+            }
         }
     };
     const updateQuantity = (index, newQuantity) => {

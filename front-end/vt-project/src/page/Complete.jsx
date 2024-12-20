@@ -12,7 +12,7 @@ const Complete = () => {
     useEffect(() => {
 
         const vnp_ResponseCode = searchParams.get('vnp_ResponseCode');
-        const orderId = "2"
+        const orderId = searchParams.get('orderId');
 
         if (vnp_ResponseCode === '00') {
             handlePaymentResponse({

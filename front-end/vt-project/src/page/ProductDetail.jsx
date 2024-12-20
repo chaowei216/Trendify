@@ -12,6 +12,8 @@ const ProductDetail = () => {
     const { id } = useParams();
     const [selectedSize, setSelectedSize] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
+    const [selectedVariant, setSelectedVariant] = useState(null);  // Store the selected variant object
+    const [selectedId, setSelectedId] = useState(null)
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -46,28 +48,35 @@ const ProductDetail = () => {
             const variant = product.variants?.find(
                 v => v.size === selectedSize && v.color === selectedColor
             );
+            setSelectedVariant(variant); // Set the selected variant object
+            setSelectedId(variant?.id); // Get the ID of the selected variant
             setAvailableQuantity(variant?.quantity || 0);
             setQuantity(1);
+        } else {
+            setSelectedVariant(null);
+            setSelectedId(null);
         }
     }, [selectedSize, selectedColor, product]);
 
     const handleAddToCart = () => {
-        if (!selectedSize || !selectedColor) {
+        if (!selectedSize || !selectedColor || !selectedVariant) {
             toast.warning('Vui lòng chọn size và màu sắc');
             return;
         }
 
+
         const cartItem = {
             productId: product.id,
+            id: product.id,
+            variantId: selectedVariant.id,
             name: product.name,
-            price: product.price,
-            image: mainImage,
+            price: selectedVariant.price || product.price,
+            image: selectedVariant.imageName || mainImage,
             size: selectedSize,
             color: selectedColor,
             quantity: quantity,
-            totalPrice: product.price * quantity
+            totalPrice: (selectedVariant.price || product.price) * quantity,
         };
-
         const currentCart = JSON.parse(Cookies.get('cart') || '[]');
         const existingItemIndex = currentCart.findIndex(
             item => item.productId === product.id &&
@@ -144,13 +153,13 @@ const ProductDetail = () => {
                             <div className="space-y-3">
                                 <h3 className="text-sm font-medium text-gray-900">Kích thước</h3>
                                 <div className="flex gap-2">
-                                    {product.variants && [...new Set(product.variants.map(v => v.size))].map((size) => (
+                                    {product.variants && [...new Set((product.variants.map(v => v.size)))].map((size) => (
                                         <button
                                             key={size}
                                             onClick={() => setSelectedSize(size)}
                                             className={`px-4 py-2 rounded ${selectedSize === size
-                                                    ? 'bg-black text-white'
-                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                                ? 'bg-black text-white'
+                                                : 'bg-gray-100 hover:bg-gray-200'
                                                 }`}
                                         >
                                             {size}
@@ -168,8 +177,8 @@ const ProductDetail = () => {
                                             key={color}
                                             onClick={() => setSelectedColor(color)}
                                             className={`px-4 py-2 rounded ${selectedColor === color
-                                                    ? 'bg-black text-white'
-                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                                ? 'bg-black text-white'
+                                                : 'bg-gray-100 hover:bg-gray-200'
                                                 }`}
                                         >
                                             {color}
