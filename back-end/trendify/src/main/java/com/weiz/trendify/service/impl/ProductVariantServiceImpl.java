@@ -12,7 +12,6 @@ import com.weiz.trendify.service.dto.request.product.VariantUpdateImageDto;
 import com.weiz.trendify.service.dto.response.product.ProductVariantDto;
 import com.weiz.trendify.service.mapper.product.ProductVariantCreateMapper;
 import com.weiz.trendify.service.mapper.product.ProductVariantMapper;
-import com.weiz.trendify.service.mapper.product.ProductVariantUpdateMapper;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j

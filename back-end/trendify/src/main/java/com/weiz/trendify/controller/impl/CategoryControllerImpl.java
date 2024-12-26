@@ -7,8 +7,6 @@ import com.weiz.trendify.service.dto.request.category.CategoryCreateDto;
 import com.weiz.trendify.service.dto.request.category.CategoryUpdateDto;
 import com.weiz.trendify.service.dto.response.Response;
 import com.weiz.trendify.service.dto.response.category.CategoryDto;
-import com.weiz.trendify.service.dto.response.product.ProductDetailDto;
-import com.weiz.trendify.service.dto.response.product.ProductDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
