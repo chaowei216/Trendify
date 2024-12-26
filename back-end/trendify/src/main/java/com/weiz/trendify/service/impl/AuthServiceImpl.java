@@ -48,21 +48,28 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginResponse login(LoginRequest request) {
+
+        log.info("Auth Service: authenticate user with email & password processing...");
+
+        // create an instance
         final var authenticationToken = new UsernamePasswordAuthenticationToken(
                 request.email(),
                 request.password()
         );
 
+        // authenticate
         final var authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        // set auth to context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // find by email
         final var user = accountRepository.findByEmail(request.email())
                 .orElse(null);
 
         // check status
         if (user != null) {
             switch (user.getStatus()) {
-
                 case ACTIVE:
                     return new LoginResponse(
                             tokenProvider.generateToken(authentication),
@@ -77,12 +84,15 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
+        // return null if user is not found
         return null;
     }
 
     @Override
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
+
+        log.info("Auth Service: register user processing...");
 
         // check email
         if (accountRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -99,6 +109,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Phone number has already existed");
         }
 
+        // map obj to instance
         final var account = Account.builder()
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
@@ -111,8 +122,10 @@ public class AuthServiceImpl implements AuthService {
                 .role(roleRepository.findByRoleName(ERole.CUSTOMER).orElseThrow(EntityNotFoundException::new))
                 .build();
 
+        // save to db
         accountRepository.save(account);
 
+        // return value
         return new RegisterResponse(
                 account.getId(),
                 account.getFullName(),
@@ -125,13 +138,19 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public TokenResponse refreshToken(TokenRequest request) {
 
+        log.info("Auth Service: refresh token processing...");
+
+        // check if token is existed in db
         final var token = tokenProvider.getRefreshToken(request.getRefreshToken())
                 .orElseThrow(() -> new BadRequestException("Invalid refresh token"));
 
+        // validate token
         tokenProvider.validateRefreshToken(token);
 
+        // get account from token
         final var account = token.getAccount();
 
+        // return value
         return TokenResponse.builder()
                 .accessToken(tokenProvider.generateToken(SecurityContextHolder.getContext().getAuthentication()))
                 .refreshToken(tokenProvider.generateRefreshToken(account).getToken())
@@ -141,6 +160,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void sendVerifyEmail(@NotNull VerifyEmailRequest request) {
+
+        log.info("Auth Service: send token for verifying email processing...");
 
         // get user by email
         final var user = accountRepository.findByEmail(request.email())
@@ -154,12 +175,15 @@ public class AuthServiceImpl implements AuthService {
         // generate random token 6-digits
         final var token = tokenProvider.generateVerifyToken(user);
 
+        // send mail
         emailService.sendTokenVerificationEmail(user, token.getToken());
     }
 
     @Override
     @Transactional
     public void confirmEmail(@NotNull ConfirmEmailRequest request) {
+
+        log.info("Auth Service: verify email with token processing...");
 
         // get user by email
         final var user = accountRepository.findByEmail(request.email())
@@ -175,12 +199,16 @@ public class AuthServiceImpl implements AuthService {
 
         // update status
         user.setStatus(UserStatus.ACTIVE);
+
+        // save to db
         accountRepository.save(user);
     }
 
     @Override
     @Transactional
     public void sendForgotPasswordCode(@NotNull ForgotPasswordRequest request) {
+
+        log.info("Auth Service: send token for refreshing password processing...");
 
         // get user by email
         final var user = accountRepository.findByEmail(request.email())
@@ -194,12 +222,15 @@ public class AuthServiceImpl implements AuthService {
         // generate random token 6-digits
         final var token = tokenProvider.generateForgotPasswordCode(user);
 
+        // send email
         emailService.sendTokenForgotPassword(user, token.getToken());
     }
 
     @Override
     @Transactional
     public void resetPassword(@NotNull ResetPasswordRequest request) {
+
+        log.info("Auth Service: reset password processing...");
 
         // get user by email
         final var user = accountRepository.findByEmail(request.email())
@@ -210,12 +241,16 @@ public class AuthServiceImpl implements AuthService {
 
         // update password
         user.setPassword(passwordEncoder.encode(request.newPassword()));
+
+        // save to db
         accountRepository.save(user);
     }
 
     @Override
     @Transactional
     public void changePassword(@NotNull ChangePasswordRecord record) {
+
+        log.info("Auth Service: change password processing...");
 
         // get account by id
         final var account = accountRepository.findById(record.accountId())
@@ -238,12 +273,16 @@ public class AuthServiceImpl implements AuthService {
 
         // update password
         account.setPassword(passwordEncoder.encode(record.newPassword()));
+
+        // save to db
         accountRepository.save(account);
     }
 
     @Override
     @Transactional
     public void logout(@NotNull Long id) {
+
+        log.info("Auth Service: logout processing...");
 
         // get account by id
         final var account = accountRepository.findById(id)
