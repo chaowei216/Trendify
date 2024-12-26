@@ -34,12 +34,12 @@ const Navbar = () => {
                             </span>
                         )}
                     </Link>
-                    <button className="relative overflow-hidden group bg-transparent border border-white rounded-full px-8 py-2 text-sm text-white transition-all duration-300">
+                    <Link to="/login" lassName="relative overflow-hidden group bg-transparent border border-white rounded-full px-8 py-2 text-sm text-white transition-all duration-300">
                         <span className="relative z-10 group-hover:text-black transition-colors duration-300">
                             ĐĂNG NHẬP
                         </span>
                         <div className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                    </button>
+                    </Link>
                 </div>
             </div>
         </nav>

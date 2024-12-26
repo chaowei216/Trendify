@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { viewProducts } from "../utils/api";
-
+import { auth } from "../utils/api"
 const ViewProduct = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
@@ -14,11 +14,32 @@ const ViewProduct = () => {
     const [size, setSize] = useState("all");
     const [sortOrder, setSortOrder] = useState("default");
     const [searchInput, setSearchInput] = useState("");
-
+    const [isLoading, setIsLoading] = useState(true);
     const itemsPerPage = 8;
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                if (!auth.validateAccess()) {
+                    navigate('/login');
+                    return;
+                }
+                await getProducts();
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                navigate('/login');
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
+        checkAuth();
+    }, [navigate]);
     const getProducts = async () => {
         try {
+            if (!auth.validateAccess()) {
+                navigate('/login');
+                return;
+            }
             const requestBody = {
                 paging: {
                     page: currentPage,
@@ -40,19 +61,19 @@ const ViewProduct = () => {
             };
 
 
-            Object.keys(requestBody).forEach(
-                (key) =>
-                    requestBody[key] === undefined && delete requestBody[key]
-            );
 
-            console.log("Request Body:", JSON.stringify(requestBody, null, 2));
-            const { data } = await viewProducts(requestBody);
-            if (data && data.contents) {
-                setProducts(data.contents);
-                setTotalPages(data.paging ? data.paging.totalPage : 1);
+
+            const response = await viewProducts(requestBody);
+            if (response && response.data && response.data.contents) {
+                setProducts(response.data.contents);
+                setTotalPages(response.data.paging ? response.data.paging.totalPage : 1);
             }
         } catch (error) {
             console.error("Error fetching products:", error);
+            if (error.message === 'Unauthorized' || error.response?.status === 401) {
+                localStorage.removeItem('accessToken');
+                navigate('/login');
+            }
             setProducts([]);
             setTotalPages(1);
         }
@@ -68,17 +89,12 @@ const ViewProduct = () => {
     };
 
     const clearAllFilters = () => {
-        setSearchParams({
-            page: 1,
-            size: itemsPerPage,
-            orders: {},
-            name: "",
-            fromPrice: undefined,
-            toPrice: undefined,
-            sort: undefined,
-            size: undefined,
-            categoryId: undefined
-        });
+        setPriceRange("all");
+        setCategory("all");
+        setSize("all");
+        setSortOrder("default");
+        setSearchInput("");
+        setCurrentPage(1);
         getProducts();
     };
 
