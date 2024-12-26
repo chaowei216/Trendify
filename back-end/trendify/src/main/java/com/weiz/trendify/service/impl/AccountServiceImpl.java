@@ -131,7 +131,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountByEmail(@NotNull String email) {
-        log.info("Account Service [GET]: Get account by email processing...");
+        log.info("Account Service [GET]: Get account by email...");
 
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Not Found"));

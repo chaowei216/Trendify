@@ -23,6 +23,10 @@ public class VnPayServiceImpl implements VnPayService {
 
     @Override
     public String createPaymentUrl(@NotNull Order order) {
+
+        log.info("VnPay Service: create payment url processing...");
+
+        // init param values
         Map<String, String> vnpParamsMap = properties.getVNPayConfig();
         vnpParamsMap.put("vnp_Amount", String.valueOf(order.getTotalPrice().intValue() * 100L));
         vnpParamsMap.put("vnp_OrderInfo", "Thanh toan don hang tai Trendify");
