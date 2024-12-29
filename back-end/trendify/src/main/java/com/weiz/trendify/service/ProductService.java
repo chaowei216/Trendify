@@ -10,6 +10,8 @@ import com.weiz.trendify.service.dto.request.product.ProductSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+
 public interface ProductService {
 
     ProductDetailDto getProduct(@NonNull final Long productId);
@@ -25,4 +27,6 @@ public interface ProductService {
     void deleteProduct(@NonNull final Long productId);
 
     Product getProductById(@NonNull final Long productId);
+
+    List<Product> getProducts();
 }
