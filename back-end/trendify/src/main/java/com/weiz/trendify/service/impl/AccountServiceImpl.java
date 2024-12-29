@@ -7,6 +7,7 @@ import com.weiz.trendify.exception.BadRequestException;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.AccountRepository;
 import com.weiz.trendify.repository.RoleRepository;
+import com.weiz.trendify.repository.specification.AccountSpecification;
 import com.weiz.trendify.service.AccountService;
 import com.weiz.trendify.service.dto.request.account.AccountSearchRequest;
 import com.weiz.trendify.service.dto.request.account.AccountUpdateDto;
@@ -135,6 +136,28 @@ public class AccountServiceImpl implements AccountService {
 
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Not Found"));
+    }
+
+    @Override
+    public List<Account> getStaffAccounts() {
+
+        return accountRepository.findAll(
+                AccountSpecification.builder()
+                        .withRole(ERole.STAFF)
+                        .withStatus(UserStatus.ACTIVE)
+                        .build()
+        );
+    }
+
+    @Override
+    public List<Account> getCustomerAccounts() {
+
+        return accountRepository.findAll(
+                AccountSpecification.builder()
+                        .withRole(ERole.CUSTOMER)
+                        .withStatus(UserStatus.ACTIVE)
+                        .build()
+        );
     }
 
     /**

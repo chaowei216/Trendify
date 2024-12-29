@@ -26,6 +26,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -153,5 +155,10 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductById(@NonNull Long productId) {
         log.info("Product Service [GET]: find product: {}", productId);
         return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public List<Product> getProducts() {
+        return productRepository.findAll();
     }
 }

@@ -1,14 +1,12 @@
 package com.weiz.trendify.repository.specification;
 
 import com.weiz.trendify.entity.Account;
-import com.weiz.trendify.entity.Role;
 import com.weiz.trendify.entity.enums.ERole;
 import com.weiz.trendify.entity.enums.UserStatus;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ObjectUtils;
 

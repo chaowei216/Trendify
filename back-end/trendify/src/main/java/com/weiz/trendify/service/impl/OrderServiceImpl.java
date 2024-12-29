@@ -8,6 +8,7 @@ import com.weiz.trendify.exception.BadRequestException;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.OrderDetailRepository;
 import com.weiz.trendify.repository.OrderRepository;
+import com.weiz.trendify.repository.specification.OrderSpecification;
 import com.weiz.trendify.service.AccountService;
 import com.weiz.trendify.service.OrderService;
 import com.weiz.trendify.service.ProductService;
@@ -181,5 +182,14 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrder(@NotNull Long orderId) {
         log.info("Order Service [GET]: get order processing...");
         return orderRepository.findById(orderId).orElse(null);
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return orderRepository.findAll(
+                OrderSpecification.builder()
+                        .withStatus(OrderStatus.PROCESSING)
+                        .build()
+        );
     }
 }
