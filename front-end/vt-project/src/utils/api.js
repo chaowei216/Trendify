@@ -19,7 +19,7 @@ export const viewProducts = async (requestBody) => {
     
     const response = await fetch('http://localhost:8080/api/v1/products/search', {
       method: 'POST',
-      headers: auth.getAuthHeaders(),
+      headers: {...auth.getAuthHeaders(),  'Content-Type': 'application/json'},
       body: JSON.stringify(requestBody)
     });
 
@@ -91,9 +91,10 @@ export const createPayment = async (paymentData) => {
 };
 export const handlePaymentResponse = async (responseData) => {
   try {
+    const token = localStorage.getItem('accessToken');
     const response = await fetch('http://localhost:8080/api/v1/payment/response', {
       method: 'PUT',
-      headers: auth.getAuthHeaders(),
+      headers: { ...auth.getAuthHeaders(),  'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orderId: responseData.orderId,
         success: responseData.success
@@ -105,8 +106,6 @@ export const handlePaymentResponse = async (responseData) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.json();
-    return data;
   } catch (error) {
     console.error('Error handling payment response:', error);
     throw error;
@@ -124,7 +123,7 @@ export const auth = {
   
     return {
       'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+   
     };
   },
 

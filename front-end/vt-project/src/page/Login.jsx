@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../utils/auth';
-
+import { Link } from 'react-router-dom'
+// import Register from './Register.jsx'
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -110,7 +111,7 @@ const Login = () => {
                         </div>
 
                         <div className="text-sm">
-                            <a href="#" className="font-medium text-black hover:text-indigo-500 transition duration-150 ease-in-out">
+                            <a href="/forgot-password" className="font-medium text-black hover:text-indigo-500 transition duration-150 ease-in-out">
                                 Quên mật khẩu?
                             </a>
                         </div>
@@ -133,7 +134,7 @@ const Login = () => {
                     <div className="text-center mt-4">
                         <p className="text-sm text-gray-600">
                             Chưa có tài khoản?{' '}
-                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150 ease-in-out">
+                            <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500 transition duration-150 ease-in-out ">
                                 Đăng ký ngay
                             </a>
                         </p>
