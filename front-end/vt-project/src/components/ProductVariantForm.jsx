@@ -6,9 +6,11 @@ const ProductVariantForm = ({ productId, onSubmit, initialData }) => {
             size: 'S',
             color: '',
             quantity: 0,
-            imageFile: null
+            imageFile: null,
+            productId: productId
         }
     );
+
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
@@ -20,20 +22,19 @@ const ProductVariantForm = ({ productId, onSubmit, initialData }) => {
             setFormData({ ...formData, [name]: value });
         }
     };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         const form = new FormData();
+        form.append('productId', productId);
         form.append('size', formData.size);
         form.append('color', formData.color);
         form.append('quantity', formData.quantity);
-        form.append('productId', productId);
+
         if (formData.imageFile) {
             form.append('imageFile', formData.imageFile);
         }
         onSubmit(form);
     };
-
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>

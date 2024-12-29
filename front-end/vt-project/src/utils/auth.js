@@ -4,7 +4,7 @@ export const auth  ={
     getAuthHeaders : () => {
         const token = localStorage.getItem('accessToken')
         return {
-            Authorization : ` ${token}`,
+            Authorization : ` Bearer ${token}`,
             'Content-Type': 'application/json'
         }
     },
@@ -17,12 +17,9 @@ throw new Error('No token here')
  }
  const user = decodeToken()
 
- if(user.Role ==='Admin'){
+ if(user.auth==='ADMIN'){
     navigate('/admin')
- } else if (
-    Array.isArray(user.Role)&&
-    user.Role.includes('Staff')
- ){
+ } else if (user.auth === 'STAFF'){
     navigate('/staff')
     
  } else {
