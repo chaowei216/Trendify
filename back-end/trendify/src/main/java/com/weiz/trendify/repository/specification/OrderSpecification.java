@@ -18,6 +18,8 @@ public final class OrderSpecification {
     final String FIELD_ORDER_DATE = "orderDate";
     final String FIELD_TOTAL_PRICE = "totalPrice";
     final String FIELD_STATUS = "status";
+    final String FIELD_ACCOUNT = "account";
+    final String FIELD_ACCOUNT_ID = "id";
 
     private final List<Specification<Order>> specifications = new ArrayList<>();
 
@@ -73,6 +75,15 @@ public final class OrderSpecification {
                             criteriaBuilder.equal(root.get(FIELD_STATUS), status)
             );
         }
+
+        return this;
+    }
+
+    public OrderSpecification withUserId(long id) {
+        specifications.add(
+                (root, query, criteriaBuilder) ->
+                        criteriaBuilder.equal(root.get(FIELD_ACCOUNT).get(FIELD_ACCOUNT_ID), id)
+        );
 
         return this;
     }

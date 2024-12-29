@@ -44,6 +44,24 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
+    public Response<PagingResponse<OrderDto>> getOrdersOfUser(Long id, OrderSearchRequest request) {
+        log.info("Order Controller: get orders of user request...");
+        final Page<OrderDto> orders = orderService.getAllOrdersOfUser(id, request);
+        final PagingRequest paging = request.getPaging();
+        return Response.ok(
+                new PagingResponse<OrderDto>()
+                        .setContents(orders.getContent())
+                        .setPaging(
+                                new PageableData()
+                                        .setPageNumber(paging.getPage() - 1)
+                                        .setTotalPage(orders.getTotalPages())
+                                        .setPageSize(paging.getSize())
+                                        .setTotalRecord(orders.getTotalElements())
+                        )
+        );
+    }
+
+    @Override
     public Response<OrderDetailDto> getOrderDetail(Long id) {
         log.info("Order Controller: get order detail request...");
         return Response.ok(orderService.getOrderDetail(id));

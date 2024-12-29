@@ -25,6 +25,13 @@ public interface OrderController {
     @PostMapping("/search")
     Response<PagingResponse<OrderDto>> getOrders(@RequestBody final OrderSearchRequest request);
 
+    @Operation(summary = "Get all orders by user id")
+    @Secured("ROLE_CUSTOMER")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/users/{id}")
+    Response<PagingResponse<OrderDto>> getOrdersOfUser(@NotNull @PathVariable(name = "id") final Long id,
+                                                       @RequestBody final OrderSearchRequest request);
+
     @Operation(summary = "Get order")
     @Secured({"ROLE_ADMIN", "ROLE_STAFF", "ROLE_CUSTOMER"})
     @ResponseStatus(HttpStatus.OK)
