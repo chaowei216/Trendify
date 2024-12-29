@@ -17,6 +17,9 @@ public interface OrderService {
 
     Page<OrderDto> getAllOrders(@NonNull final OrderSearchRequest request);
 
+    Page<OrderDto> getAllOrdersOfUser(@NonNull final Long userId,
+                                      @NonNull final OrderSearchRequest request);
+
     Order createOrder(@NonNull final OrderCreateDto orderDto);
 
     OrderDetailDto updateOrder(@NonNull final OrderUpdateDto orderDto);

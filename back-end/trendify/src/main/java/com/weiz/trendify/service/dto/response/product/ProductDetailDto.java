@@ -1,5 +1,6 @@
 package com.weiz.trendify.service.dto.response.product;
 
+import com.weiz.trendify.service.dto.response.category.CategoryDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,4 +21,5 @@ public class ProductDetailDto {
     String description;
     String defaultImage;
     List<ProductVariantDto> variants = new ArrayList<>();
+    CategoryDto category;
 }
