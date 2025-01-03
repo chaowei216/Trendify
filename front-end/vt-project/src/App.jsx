@@ -16,6 +16,7 @@ import { CartProvider } from './Context/CartContext.jsx'
 import ForgotPassword from './page/ForgotPassword.jsx'
 import ResetPassword from './page/ResetPassword.jsx'
 import AdminDashboard from './page/AdminDashboard';
+import Profile from './page/Profile.jsx'
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
@@ -37,6 +38,7 @@ function App() {
         <div>
           <ToastContainer position="top-right" autoClose={3000} />
           <Routes>
+            <Route path="/profile" element={<Profile />} />
             <Route path="/admin/*" element={<AdminDashboard />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
