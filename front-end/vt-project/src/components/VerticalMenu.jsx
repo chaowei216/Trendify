@@ -13,9 +13,9 @@ const VerticalMenu = () => {
     const [isCollapsed, setIsCollapsed] = useState(false)
 
     const navItems = [
-        { icon: faHome, label: 'Sản phẩm ', path: '/#' },
+        { icon: faHome, label: 'Sản phẩm ', path: '/staff' },
 
-        { icon: faBook, label: 'Đơn hàng', path: '/#' },
+
 
     ]
 
@@ -36,7 +36,7 @@ const VerticalMenu = () => {
             <div>
                 <div className="flex items-center mb-8">
                     <div
-                        className="bg-white text-black rounded-lg p-2 font-bold cursor-pointer"
+                        className="bg-gradient-to- from-black to-blue-500  text-black rounded-lg p-2 font-bold cursor-pointer"
                         onClick={handleToggle}
                     >
                         Magnis

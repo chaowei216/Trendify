@@ -1,8 +1,9 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminSidebar from '../components/AdminSidebar';
 import AdminHeader from '../components/AdminHeader';
 import AccountManagement from '../components/AccountManagement';
+import DashBoardOverView from '../components/DashBoardOverView';
 
 const AdminDashboard = () => {
     return (
@@ -10,10 +11,11 @@ const AdminDashboard = () => {
             <AdminSidebar />
             <div className="flex-1">
                 <AdminHeader />
-                <main>
+                <main className="p-6">
                     <Routes>
-                        <Route path="/" element={<AccountManagement />} />
-                        <Route path="/accounts" element={<AccountManagement />} />
+                        <Route path="/" element={<Navigate to="dashboard" replace />} />
+                        <Route path="accounts" element={<AccountManagement />} />
+                        <Route path="dashboard" element={<DashBoardOverView />} />
                     </Routes>
                 </main>
             </div>

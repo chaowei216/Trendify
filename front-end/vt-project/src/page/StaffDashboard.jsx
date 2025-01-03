@@ -78,29 +78,87 @@ const StaffDashboard = () => {
 
     const handleUpdate = async (formData) => {
         try {
+            // Kiểm tra xem có đang edit product không
+            if (!editingProduct) {
+                toast.error('Không tìm thấy sản phẩm để chỉnh sửa');
+                return;
+            }
+
+            // Chuyển đổi FormData sang object
+            const updateData = {
+                id: editingProduct.id,
+                name: formData.get('name'),
+                price: parseFloat(formData.get('price')) || 0,
+                description: formData.get('description')
+            };
+
+            // Validate dữ liệu
+            if (!updateData.name || updateData.price < 0) {
+                toast.error('Vui lòng điền đầy đủ thông tin hợp lệ');
+                return;
+            }
+
             const response = await fetch(
                 `http://localhost:8080/api/v1/products/${editingProduct.id}`,
                 {
                     method: 'PUT',
-                    headers: auth.getAuthHeaders(),
-                    body: formData,
+                    headers: {
+                        ...auth.getAuthHeaders(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
                 }
             );
 
-            if (response.ok) {
-                toast.success('Product updated successfully');
+            const result = await response.json();
+
+            if (response.ok && result.status === 'OK') {
+
+                if (formData.get('imageFile')) {
+                    await uploadProductImage(editingProduct.id, formData.get('imageFile'));
+                }
+
+                toast.success('Cập nhật sản phẩm thành công');
                 fetchProducts();
-                setShowForm(false);
+                setIsModalOpen(false);
                 setEditingProduct(null);
             } else {
+                // Xử lý lỗi từ server
                 if (response.status === 401) {
                     auth.handleUnauthorized(navigate);
                     return;
                 }
-                toast.error('Failed to update product');
+
+                toast.success('Cập nhật sản phẩm thành công');
+                fetchProducts();
+                setIsModalOpen(false);
+                setEditingProduct(null);
             }
         } catch (error) {
-            toast.error('Error updating product');
+            console.error('Lỗi cập nhật sản phẩm:', error);
+            toast.error('Đã có lỗi xảy ra khi cập nhật sản phẩm');
+        }
+    };
+    const uploadProductImage = async (productId, imageFile) => {
+        try {
+            const imageFormData = new FormData();
+            imageFormData.append('imageFile', imageFile);
+
+            const response = await fetch(
+                `http://localhost:8080/api/v1/products/${productId}/image`,
+                {
+                    method: 'POST',
+                    headers: auth.getAuthHeaders(),
+                    body: imageFormData
+                }
+            );
+
+            if (!response.ok) {
+                toast.error('Không thể upload ảnh sản phẩm');
+            }
+        } catch (error) {
+            console.error('Lỗi upload ảnh:', error);
+            toast.error('Đã có lỗi xảy ra khi upload ảnh');
         }
     };
     const Pagination = () => {

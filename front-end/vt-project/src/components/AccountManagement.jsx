@@ -258,7 +258,7 @@ const AccountManagement = () => {
         <div className="p-6">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold">Account Management</h1>
-                <p className="text-gray-600">Manage user accounts and staff</p>
+
             </div>
 
             <div className="mb-6 flex justify-between items-center">
@@ -310,12 +310,7 @@ const AccountManagement = () => {
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <button
-                                        onClick={() => setSelectedAccount(account)}
-                                        className="text-blue-600 hover:text-blue-800 mr-3"
-                                    >
-                                        Edit
-                                    </button>
+
                                     <button
                                         onClick={() => handleBanAccount(account.id)}
                                         className="text-red-600 hover:text-red-800"
@@ -337,14 +332,7 @@ const AccountManagement = () => {
                 />
             )}
 
-            {/* Edit Account Modal */}
-            {selectedAccount && (
-                <EditAccountModal
-                    account={selectedAccount}
-                    onClose={() => setSelectedAccount(null)}
-                    onSubmit={(formData) => handleUpdateAccount(selectedAccount.id, formData)}
-                />
-            )}
+
         </div>
     );
 };

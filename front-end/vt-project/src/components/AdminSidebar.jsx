@@ -5,7 +5,9 @@ const AdminSidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { path: '/admin/accounts', label: 'Account Management', icon: '👥' }
+        { path: '/admin/accounts', label: 'Account Management', icon: '👥' },
+        { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' }
+
     ];
 
     return (
@@ -19,8 +21,8 @@ const AdminSidebar = () => {
                         key={item.path}
                         to={item.path}
                         className={`flex items-center p-3 mb-2 rounded-lg ${location.pathname === item.path
-                                ? 'bg-blue-500 text-white'
-                                : 'hover:bg-gray-100'
+                            ? 'bg-blue-500 text-white'
+                            : 'hover:bg-gray-100'
                             }`}
                     >
                         <span className="mr-3">{item.icon}</span>
