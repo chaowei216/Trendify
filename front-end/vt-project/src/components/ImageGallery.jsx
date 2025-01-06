@@ -5,7 +5,7 @@ const ImageGallery = () => {
         <div className="relative group px-4 lg:px-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Main Image Section */}
-                <div className="col-span-2 relative rounded-2xl overflow-hidden shadow-lg">
+                <div className="col-span-2 relative rounded-2xl ">
                     <img
                         src={picture1}
                         alt="Main Product"

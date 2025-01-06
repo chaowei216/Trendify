@@ -1,59 +1,81 @@
 import React from 'react';
+import { FaEdit, FaTrash, FaImage } from 'react-icons/fa';
 
-const ProductVariantTable = ({ variants, onEdit, onDelete }) => {
+const ProductVariantTable = ({ variants = [], onEdit, onDelete }) => {
+    if (!Array.isArray(variants)) {
+        console.warn('Variants prop is not an array:', variants);
+        return (
+            <div className="text-center py-4 text-gray-500 flex items-center justify-center">
+                <FaImage className="mr-2" /> Không có biến thể nào
+            </div>
+        );
+    }
+
+    if (variants.length === 0) {
+        return (
+            <div className="text-center py-4 text-gray-500 flex items-center justify-center">
+                <FaImage className="mr-2" /> Không có biến thể nào
+            </div>
+        );
+    }
+
     return (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <table className="w-full">
+                <thead className="bg-gray-100">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-
+                        <th className="px-4 py-2 text-left">Size</th>
+                        <th className="px-4 py-2 text-left">Color</th>
+                        <th className="px-4 py-2 text-left">Quantity</th>
+                        <th className="px-4 py-2 text-left">Image</th>
+                        <th className="px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {variants && variants.length > 0 ? (
-                        variants.map((variant) => (
-                            <tr key={variant.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap">{variant.id}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    {variant.imageName && (
-                                        <img
-                                            src={variant.imageName}
-                                            alt={`${variant.color} ${variant.size}`}
-                                            className="h-16 w-16 object-cover rounded-lg"
-                                        />
-                                    )}
+                <tbody>
+                    {variants.map((variant) => {
+                        if (!variant) return null;
+
+                        const safeVariant = {
+                            id: variant?.id || '',
+                            size: variant?.size || 'N/A',
+                            color: variant?.color || 'N/A',
+                            quantity: variant?.quantity || 0,
+                            image: variant?.imageName || 'N/A'
+                        };
+
+                        return (
+                            <tr key={safeVariant.id} className="border-t">
+                                <td className="px-4 py-2">{safeVariant.size}</td>
+                                <td className="px-4 py-2">{safeVariant.color}</td>
+                                <td className="px-4 py-2">{safeVariant.quantity}</td>
+                                <td className="px-4 py-2">
+                                    <img
+                                        src={safeVariant.image}
+                                        alt={`Variant ${safeVariant.size}`}
+                                        className="h-12 w-12 object-cover rounded"
+                                        onError={(e) => {
+
+                                            e.target.onerror = null;
+                                        }}
+                                    />
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">{variant.size}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{variant.color}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{variant.quantity}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-4 py-2 space-x-2">
                                     <button
                                         onClick={() => onEdit(variant)}
-                                        className="text-blue-600 hover:text-blue-900 mr-2"
+                                        className="text-blue-500 hover:text-blue-700 flex items-center"
                                     >
-                                        Edit
+                                        <FaEdit className="mr-1" /> Sửa
                                     </button>
                                     <button
-                                        onClick={() => onDelete(variant.id)}
-                                        className="text-red-600 hover:text-red-900"
+                                        onClick={() => onDelete(safeVariant.id)}
+                                        className="text-red-500 hover:text-red-700 flex items-center"
                                     >
-                                        Delete
+                                        <FaTrash className="mr-1" /> Xóa
                                     </button>
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                No variants found
-                            </td>
-                        </tr>
-                    )}
+                        );
+                    })}
                 </tbody>
             </table>
         </div>

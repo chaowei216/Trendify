@@ -9,15 +9,22 @@ import com.weiz.trendify.service.dto.response.order.OrderDto;
 import org.springframework.data.domain.Page;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+
 public interface OrderService {
 
     OrderDetailDto getOrderDetail(@NonNull final Long orderId);
 
     Page<OrderDto> getAllOrders(@NonNull final OrderSearchRequest request);
 
+    Page<OrderDto> getAllOrdersOfUser(@NonNull final Long userId,
+                                      @NonNull final OrderSearchRequest request);
+
     Order createOrder(@NonNull final OrderCreateDto orderDto);
 
     OrderDetailDto updateOrder(@NonNull final OrderUpdateDto orderDto);
 
     Order getOrder(@NonNull final Long orderId);
+
+    List<Order> getOrders();
 }

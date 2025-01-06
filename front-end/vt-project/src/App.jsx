@@ -10,8 +10,13 @@ import Complete from './page/Complete.jsx'
 import Staff from './page/StaffDashboard.jsx'
 import NotFoundPage from './page/NotFoundPage.jsx'
 import Login from './page/Login.jsx'
+import Register from './page/Register.jsx'
+import TokenConfirmation from './page/TokenConfirmation.jsx'
 import { CartProvider } from './Context/CartContext.jsx'
-
+import ForgotPassword from './page/ForgotPassword.jsx'
+import ResetPassword from './page/ResetPassword.jsx'
+import AdminDashboard from './page/AdminDashboard';
+import Profile from './page/Profile.jsx'
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
 
@@ -33,6 +38,10 @@ function App() {
         <div>
           <ToastContainer position="top-right" autoClose={3000} />
           <Routes>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/admin/*" element={<AdminDashboard />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/done" element={< Complete />} />
             <Route path="/staff" element={<Staff />} />
             <Route path="/cart" element={<Cart />} />
@@ -40,30 +49,8 @@ function App() {
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/product" element={<ViewProduct />} />
             <Route path="/login" element={<Login />} />
-            {/* <Route
-              path="/product"
-              element={
-                <ProtectedRoute allowedRoles={['Admin', 'Staff', 'Customer']}>
-                  <ViewProduct />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute allowedRoles={['Admin']}>
-                  <ViewProduct />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/staff"
-              element={
-                <ProtectedRoute allowedRoles={['Staff']}>
-                  <StaffDashboard />
-                </ProtectedRoute>
-              }
-            /> */}
+            <Route path="/register" element={<Register />} />
+            <Route path="/confirm" element={<TokenConfirmation />} />
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

@@ -27,8 +27,6 @@ const Complete = () => {
                     console.error('Error handling payment response:', error);
                     navigate('/error');
                 });
-        } else {
-            navigate('/error');
         }
     }, [searchParams, navigate]);
 

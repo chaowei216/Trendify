@@ -1,14 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { decodeToken } from '../utils/decodeJWT'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
-
-
+import Swal from 'sweetalert2'
 
 const HeaderDashboard = () => {
     const [userImage, setUserImage] = useState("")
     const [showDropdown, setShowDropdown] = useState(false)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const userData = decodeToken()
@@ -22,9 +20,35 @@ const HeaderDashboard = () => {
     }
 
     const handleLogout = () => {
-        if (window.confirm('Do you want to logout?')) {
-            clearSession()
-        }
+        // Hiển thị confirm dialog
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn đăng xuất?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đăng xuất',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Xóa access token 
+                localStorage.removeItem('accessToken');
+
+                // Xóa thông tin user nếu có
+                localStorage.removeItem('userInfo');
+
+                // Hiển thị thông báo đăng xuất thành công
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng xuất thành công!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                // Chuyển hướng về trang đăng nhập
+                navigate('/login');
+            }
+        });
     }
 
     return (
@@ -34,32 +58,23 @@ const HeaderDashboard = () => {
             </div>
 
             <div className="flex items-center space-x-4 ml-auto">
-                {/* Search Bar */}
-                <div className="relative">
-                    <FontAwesomeIcon
-                        icon={faSearch}
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    />
-                    <input
-                        type="search"
-                        placeholder="Tìm kiếm..."
-                        className="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
                 {/* Profile Image and Dropdown */}
                 <div className="flex items-center relative">
                     <div onClick={toggleDropdown} className="cursor-pointer">
-                        {userImage && (
+                        {userImage ? (
                             <img
                                 src={userImage}
                                 alt="Profile"
-                                className="w-10 h-10 rounded-full"
+                                className="w-10 h-10 rounded-full object-cover"
                                 referrerPolicy="no-referrer"
                                 onError={(e) => {
                                     e.target.src = 'default-profile.png'
                                 }}
                             />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                <span className="text-gray-500">👤</span>
+                            </div>
                         )}
                     </div>
 
@@ -71,12 +86,12 @@ const HeaderDashboard = () => {
                             >
                                 Quay lại Dashboard
                             </Link>
-                            <Link
+                            <button
                                 onClick={handleLogout}
                                 className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                             >
                                 Đăng xuất
-                            </Link>
+                            </button>
                         </div>
                     )}
                 </div>

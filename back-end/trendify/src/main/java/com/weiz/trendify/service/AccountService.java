@@ -25,4 +25,8 @@ public interface AccountService {
     void banAccount(@NonNull final Long id);
 
     Account getAccountByEmail(@NonNull final String email);
+
+    List<Account> getStaffAccounts();
+
+    List<Account> getCustomerAccounts();
 }

@@ -8,6 +8,7 @@ import com.weiz.trendify.exception.BadRequestException;
 import com.weiz.trendify.exception.NotFoundException;
 import com.weiz.trendify.repository.OrderDetailRepository;
 import com.weiz.trendify.repository.OrderRepository;
+import com.weiz.trendify.repository.specification.OrderSpecification;
 import com.weiz.trendify.service.AccountService;
 import com.weiz.trendify.service.OrderService;
 import com.weiz.trendify.service.ProductService;
@@ -45,7 +46,6 @@ public class OrderServiceImpl implements OrderService {
     final AccountService accountService;
     final OrderDetailRepository orderDetailRepository;
     final ProductVariantService productVariantService;
-    final ProductService productService;
 
     @Override
     public OrderDetailDto getOrderDetail(@NotNull Long orderId) {
@@ -72,6 +72,29 @@ public class OrderServiceImpl implements OrderService {
 
         // get all orders
         return orderRepository.findAll(request.specification(), request.getPaging().pageable())
+                .map(orderMapper::toDto);
+    }
+
+    @Override
+    public Page<OrderDto> getAllOrdersOfUser(@NotNull Long userId, @NotNull OrderSearchRequest request) {
+
+        log.info("Order Service [GET ALL]: get all orders of user processing...");
+
+        // get user by id
+        final var user = accountService.getAccount(userId);
+
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+
+        // get all orders
+        return orderRepository.findAll(
+                OrderSpecification.builder()
+                        .withUserId(user.getId())
+                        .withStatus(request.getStatus())
+                        .build(),
+                request.getPaging().pageable()
+                )
                 .map(orderMapper::toDto);
     }
 
@@ -181,5 +204,14 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrder(@NotNull Long orderId) {
         log.info("Order Service [GET]: get order processing...");
         return orderRepository.findById(orderId).orElse(null);
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return orderRepository.findAll(
+                OrderSpecification.builder()
+                        .withStatus(OrderStatus.PROCESSING)
+                        .build()
+        );
     }
 }

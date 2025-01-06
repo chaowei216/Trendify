@@ -1,68 +1,47 @@
 import React, { useState } from 'react';
-
-const ProductVariantForm = ({ productId, onSubmit, initialData }) => {
-    const [formData, setFormData] = useState(
-        initialData || {
-            size: 'S',
-            color: '',
-            quantity: 0,
-            imageFile: null
-        }
-    );
+import Swal from 'sweetalert2';
+const ProductVariantForm = ({
+    productId,
+    onSubmit,
+    initialData
+}) => {
+    const [formData, setFormData] = useState({
+        size: initialData?.size || '',
+        color: initialData?.color || '',
+        quantity: initialData?.quantity || 0,
+        imageFile: null
+    });
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
-        if (type === 'file') {
-            setFormData({ ...formData, imageFile: files[0] });
-        } else if (name === 'quantity') {
-            setFormData({ ...formData, [name]: parseInt(value) || 0 });
-        } else {
-            setFormData({ ...formData, [name]: value });
-        }
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'file'
+                ? files[0]
+                : (type === 'number'
+                    ? parseInt(value) || 0
+                    : value)
+        }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const form = new FormData();
-        form.append('size', formData.size);
-        form.append('color', formData.color);
-        form.append('quantity', formData.quantity);
-        form.append('productId', productId);
+
+        const submitData = new FormData();
+        submitData.append('productId', productId);
+        submitData.append('size', formData.size);
+        submitData.append('color', formData.color);
+        submitData.append('quantity', formData.quantity);
+
         if (formData.imageFile) {
-            form.append('imageFile', formData.imageFile);
+            submitData.append('imageFile', formData.imageFile);
         }
-        onSubmit(form);
+
+        onSubmit(submitData);
     };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Size</label>
-                <select
-                    name="size"
-                    value={formData.size}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    required
-                >
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Color</label>
-                <input
-                    type="text"
-                    name="color"
-                    value={formData.color}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    required
-                />
-            </div>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700">Quantity</label>
@@ -71,28 +50,18 @@ const ProductVariantForm = ({ productId, onSubmit, initialData }) => {
                     name="quantity"
                     value={formData.quantity}
                     onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    className="mt-1 block w-full rounded-md border-gray-300"
                     required
-                    min="0"
                 />
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700">Image</label>
-                <input
-                    type="file"
-                    name="imageFile"
-                    onChange={handleChange}
-                    className="mt-1 block w-full"
-                    accept="image/*"
-                />
-            </div>
+
 
             <button
                 type="submit"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="w-full bg-blue-500 text-white py-2 rounded-md"
             >
-                {initialData ? 'Update Variant' : 'Add Variant'}
+                {initialData ? 'Update Variant' : 'Create Variant'}
             </button>
         </form>
     );
