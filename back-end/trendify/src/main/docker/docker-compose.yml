@@ -9,3 +9,16 @@ services:
     extends:
       file: ./minio.yml
       service: minio
+  trendify:
+    container_name: trendify
+    build:
+      context: ../../../
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+    - default
+
+networks:
+  default:
+    name: trendify

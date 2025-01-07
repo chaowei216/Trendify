@@ -18,17 +18,3 @@ spring:
             enable: true
   profiles:
     active: @spring.profiles.active@
-
-# swagger
-open:
-  api:
-    title: API Service
-    version: v1.0.0
-    description: API Doc for trendify application
-
-# spring doc
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-  api-docs:
-    path: /api-docs

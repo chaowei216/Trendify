@@ -1,7 +1,11 @@
 FROM openjdk:21-jdk-slim
 
+ARG JAR_FILE=target/*.jar
+
 # Sao chép JAR từ thư mục target vào container
-COPY ./target/trendify-0.0.1-SNAPSHOT.jar trendify-0.0.1-SNAPSHOT.jar
+COPY ${JAR_FILE} trendify.jar
 
 # Chạy ứng dụng JAR
-ENTRYPOINT ["java", "-jar", "/trendify-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "trendify.jar"]
+
+EXPOSE 8080

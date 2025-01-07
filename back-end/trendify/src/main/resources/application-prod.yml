@@ -13,12 +13,19 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+# spring doc
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
 # minio
 integration:
   minio:
-    access-key: OoeaO2H333E0EzGqayz4
-    secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
-    url: http://localhost:9000
+    access-key: admin
+    secret-key: admin123
+    url: http://172.21.32.1:9000
   vnpay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     returnUrl: http://localhost:5173

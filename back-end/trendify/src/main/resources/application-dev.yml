@@ -13,12 +13,26 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+# swagger
+open:
+  api:
+    title: API Service Document - Dev
+    version: v1.0.0
+    description: API Doc for trendify application DEV
+
+# spring doc
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
 # minio
 integration:
   minio:
-    access-key: OoeaO2H333E0EzGqayz4
-    secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
-    url: http://localhost:9000
+    access-key: admin
+    secret-key: admin123
+    url: http://172.21.32.1:9000
   vnpay:
     url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     returnUrl: http://localhost:5173
