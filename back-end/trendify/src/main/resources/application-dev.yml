@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:mysql://172.21.32.1:3336/trendify_dev
+    username: root
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+# minio
+integration:
+  minio:
+    access-key: OoeaO2H333E0EzGqayz4
+    secret-key: 8ndtwupqla57VllS8AA5uqF2kEWBpzOhq51cBY1L
+    url: http://localhost:9000
+  vnpay:
+    url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    returnUrl: http://localhost:5173
+    tmnCode: 0QZQV8BP
+    secretKey: JJSTFUGWAP8WBD9JM0MQTLJFP7XA66JI
+    version: 2.1.0
+    command: pay
+
+# jwt
+jwt:
+  secretKey: G2PaZgX9HcYPoyByu48NJpmmStYfdk1t0JZtGhlk5oY=
+  expiration: 10000
+  refreshDuration: 10000
+  issuer: localhost:8080
+  audience: localhost:5173
