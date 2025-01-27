@@ -46,5 +46,5 @@ jwt:
   secretKey: G2PaZgX9HcYPoyByu48NJpmmStYfdk1t0JZtGhlk5oY=
   expiration: 10000
   refreshDuration: 10000
-  issuer: localhost:8080
+  issuer: 172.21.32.1:8080
   audience: localhost:5173

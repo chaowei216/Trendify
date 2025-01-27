@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public interface ProductController {
 
     @Operation(summary = "Get all products")
-    @Secured({"ROLE_ADMIN", "ROLE_STAFF", "ROLE_CUSTOMER"})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/search")
     Response<PagingResponse<ProductDto>> getProducts(@RequestBody final ProductSearchRequest request);
